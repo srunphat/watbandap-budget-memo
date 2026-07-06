@@ -1,0 +1,179 @@
+==========================================================================
+คู่มือการตั้งค่า Google Sheets เป็นฐานข้อมูลคลาวด์ส่วนกลาง (Wat Ban Dap School) - แก้ไขบั๊ก
+==========================================================================
+
+การตั้งค่านี้จะทำให้คุณครูทุกคนในโรงเรียนวัดบ้านดาบสามารถเปิดหน้าเว็บเพื่อพิมพ์บันทึกข้อความ 
+และมองเห็นฐานข้อมูลโครงการหลัก/งบประมาณกิจกรรมย่อยอัปเดตแบบเรียลไทม์ (เมื่อมีคนเพิ่มโครงการหรือแก้ไข ข้อมูลจะบันทึกขึ้นไปแชร์ร่วมกันทันที)
+
+ขั้นตอนมีดังนี้ครับ:
+
+--------------------------------------------------------------------------
+ขั้นตอนที่ 1: เตรียม Google Sheet ของโรงเรียน
+--------------------------------------------------------------------------
+1. เปิด Google Drive ของท่านขึ้นมา
+2. สร้าง Google Sheets (สเปรดชีต) ใหม่ขึ้นมา 1 ไฟล์
+3. ตั้งชื่อไฟล์ตามต้องการ (เช่น "ฐานข้อมูลระบบของบกิจกรรมโรงเรียนวัดบ้านดาบ")
+4. ดับเบิ้ลคลิกเพื่อเปิดไฟล์สเปรดชีตนั้น
+5. ดูที่ชื่อแท็บชีตด้านล่างซ้าย ให้ดับเบิ้ลคลิกเพื่อเปลี่ยนชื่อแท็บจากเดิม "ชีต1" (หรือ "Sheet1")
+   ให้เปลี่ยนเป็นชื่อภาษาอังกฤษคำนี้สะกดถูกต้อง:
+   Projects
+   (ห้ามพิมพ์ตกหล่น และตัว P ต้องพิมพ์เป็นตัวใหญ่)
+
+--------------------------------------------------------------------------
+ขั้นตอนที่ 2: เขียนระบบเชื่อมโยง (Google Apps Script)
+--------------------------------------------------------------------------
+1. บนเมนูด้านบนของสเปรดชีต ให้คลิกที่ "ส่วนขยาย" (Extensions) -> เลือก "Apps Script"
+2. บราวเซอร์จะเปิดหน้าต่างแก้ไขโค้ดขึ้นมาใหม่
+3. ให้คลิกลบโค้ดเริ่มต้นที่แสดงอยู่ในไฟล์ออกทั้งหมด (ลบให้ว่างเปล่า)
+4. คัดลอก (Copy) โค้ดด้านล่างนี้ทั้งหมด ไปวาง (Paste) ลงในหน้าต่าง Apps Script นั้น:
+
+// === เริ่มคัดลอกโค้ดตั้งแต่บรรทัดนี้ ===
+
+function doGet(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Projects");
+  if (!sheet) {
+    sheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet("Projects");
+    sheet.appendRow([
+      "Project ID", "Project Name", "Project Budget", "Project Owner", "Project Date",
+      "Activity ID", "Activity Name", "Activity Budget", "Activity Date", "Activity Owner",
+      "Has Sub-Activities"
+    ]);
+  }
+  
+  var data = sheet.getDataRange().getValues();
+  var rows = data.slice(1);
+  
+  var projectsMap = {};
+  rows.forEach(function(row) {
+    var pId = row[0];
+    if (!pId) return;
+    
+    if (!projectsMap[pId]) {
+      projectsMap[pId] = {
+        id: pId,
+        name: row[1],
+        totalBudget: Number(row[2]),
+        owner: row[3],
+        projectDate: row[4],
+        hasSubActivities: row[10] === true || row[10] === "TRUE" || row[10] === "true",
+        activities: []
+      };
+    }
+    
+    var actId = row[5];
+    if (actId) {
+      projectsMap[pId].activities.push({
+        id: actId,
+        name: row[6],
+        budget: Number(row[7]),
+        date: row[8],
+        owner: row[9]
+      });
+    }
+  });
+  
+  var projectsList = [];
+  for (var key in projectsMap) {
+    projectsList.push(projectsMap[key]);
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify({
+    status: "success",
+    data: projectsList
+  })).setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  var result = { status: "error", message: "Invalid action" };
+  try {
+    var postData = JSON.parse(e.postData.contents);
+    var action = postData.action;
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Projects");
+    
+    if (!sheet) {
+      sheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet("Projects");
+      sheet.appendRow([
+        "Project ID", "Project Name", "Project Budget", "Project Owner", "Project Date",
+        "Activity ID", "Activity Name", "Activity Budget", "Activity Date", "Activity Owner",
+        "Has Sub-Activities"
+      ]);
+    }
+    
+    if (action === "saveProjectsList") {
+      // เคลียร์ชีตและเขียนใหม่ทั้งหมดเพื่อรักษาสถานะข้อมูลซิงค์ที่ตรงกัน
+      sheet.clearContents();
+      sheet.appendRow([
+        "Project ID", "Project Name", "Project Budget", "Project Owner", "Project Date",
+        "Activity ID", "Activity Name", "Activity Budget", "Activity Date", "Activity Owner",
+        "Has Sub-Activities"
+      ]);
+      
+      var projects = postData.projects || [];
+      projects.forEach(function(p) {
+        if (p.activities && p.activities.length > 0) {
+          p.activities.forEach(function(a) {
+            sheet.appendRow([
+              p.id, p.name, p.totalBudget, p.owner, p.projectDate,
+              a.id, a.name, a.budget, a.date, a.owner,
+              p.hasSubActivities ? "TRUE" : "FALSE"
+            ]);
+          });
+        } else {
+          sheet.appendRow([
+            p.id, p.name, p.totalBudget, p.owner, p.projectDate,
+            "", "", 0, "", "",
+            p.hasSubActivities ? "TRUE" : "FALSE"
+          ]);
+        }
+      });
+      result = { status: "success", message: "Saved successfully" };
+    }
+  } catch (err) {
+    result = { status: "error", message: err.toString() };
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doOptions(e) {
+  return ContentService.createTextOutput("")
+    .setMimeType(ContentService.MimeType.TEXT);
+}
+
+// === สิ้นสุดการคัดลอกโค้ด ===
+
+5. คลิกไอคอนรูปแผ่นดิสก์ "บันทึกโครงการ" (Save project) ด้านบนสุด
+
+--------------------------------------------------------------------------
+ขั้นตอนที่ 3: เผยแพร่เว็บแอปพลิเคชัน (Deploy Web App)
+--------------------------------------------------------------------------
+** ขั้นตอนนี้สำคัญมาก หากตั้งค่าไม่ตรง ระบบจะไม่ยอมซิงค์ข้อมูลข้ามคอมพิวเตอร์ครับ **
+
+1. คลิกปุ่มสีน้ำเงินด้านขวาบนคำว่า "การทำให้ใช้งานได้" (Deploy) -> เลือก "การจัดการการทำให้ใช้งานได้ใหม่" (New deployment)
+2. ดูที่ไอคอนรูปฟันเฟืองทางซ้ายของหน้าต่างย่อย ตรวจสอบว่าเลือกประเภทเป็น "เว็บแอป" (Web app)
+3. ป้อนคำอธิบายสั้นๆ (เช่น "v2")
+4. ในกล่องหัวข้อ "เรียกใช้ในฐานะ" (Execute as): ให้เลือกตัวเลือก:
+   "ฉัน (อีเมลของคุณเอง)" (Me)
+5. ในกล่องหัวข้อ "ผู้ที่มีสิทธิ์เข้าถึง" (Who has access): ให้เปลี่ยนค่าจากเดิมให้เป็น:
+   "ทุกคน" (Anyone)   <-- หัวข้อนี้ห้ามเป็น 'เฉพาะฉัน' หรือ 'คนในโดเมน' เพราะจะบล็อกเครื่องคนอื่นครับ
+6. คลิกปุ่มสีน้ำเงิน "การทำให้ใช้งานได้" (Deploy)
+7. รอสักครู่ หน้าจอจะถามการอนุมัติสิทธิ์ (Authorize Access):
+   - คลิกปุ่ม "อนุมัติสิทธิ์การเข้าถึง" (Authorize access)
+   - เลือกบัญชีอีเมล Google ของคุณ
+   - หากขึ้นหน้าจอเตือนว่า Google ยังไม่ได้ตรวจสอบแอปนี้ ให้คลิกที่ "ขั้นสูง" (Advanced) ด้านล่างซ้าย -> เลือก "ไปที่ [ชื่อแอป] (ไม่ปลอดภัย)" (Go to ... (unsafe))
+   - คลิกปุ่ม "อนุญาต" (Allow)
+8. ระบบจะสร้างลิงก์เชื่อมต่อให้ คุณจะเห็นช่องข้อความใต้คำว่า "เว็บแอป" (Web app) ให้คลิกปุ่ม "คัดลอก" (Copy) ลิงก์ URL นั้นไว้
+   (ลิงก์จะมีลักษณะแบบนี้: https://script.google.com/macros/s/XXXXXX/exec)
+
+--------------------------------------------------------------------------
+ขั้นตอนที่ 4: การเปิดใช้งานคลาวด์ในตัวโปรแกรมเบิกเงินกิจกรรม
+--------------------------------------------------------------------------
+1. เปิดโปรแกรมเว็บแอปพลิเคชันของเราบนบราวเซอร์
+2. ไปที่เมนู "ข้อมูล & การตั้งค่า" (เมนูด้านล่างสุดของแถบสีน้ำเงินทางซ้าย)
+3. เลื่อนลงมาที่กล่อง "ฐานข้อมูลกลางคลาวด์ (Google Sheets)"
+4. วาง (Paste) ลิงก์ URL ที่คัดลอกมาจากข้อ 8 ในขั้นตอนที่ 3 ลงในช่องป้อนข้อมูล
+5. คลิกปุ่ม "เชื่อมต่อและเปิดใช้ระบบคลาวด์"
+6. ระบบจะขึ้นแจ้งเตือนว่าเชื่อมต่อสำเร็จ และกล่องสถานะจะแสดงผลเป็นสีเขียวระบุว่า "เชื่อมต่อคลาวด์สำเร็จ (Google Sheets)"
+7. ทำตามขั้นตอนนี้ในเครื่องคอมพิวเตอร์ของคุณครูทุกท่านด้วยลิงก์ URL เดียวกันนี้ ทุกคนจะมองเห็นคลังข้อมูลตัวเลขเดียวกันแบบเรียลไทม์ทันทีครับ!
+==========================================================================

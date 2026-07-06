@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบขออนุญาตจัดกิจกรรมและบริหารงบประมาณ - โรงเรียนวัดบ้านดาบ</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- html2pdf.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <i class="fa-solid fa-file-invoice-dollar logo-icon"></i>
+                </div>
+                <div class="sidebar-title-container">
+                    <span class="sidebar-title">ระบบบริหารงบประมาณ</span>
+                    <span class="sidebar-subtitle">โรงเรียนวัดบ้านดาบ</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-tab="dashboard">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>แดชบอร์ดโครงการ</span>
+                </button>
+                <button class="nav-btn" data-tab="projects">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>จัดการโครงการ</span>
+                </button>
+                <button class="nav-btn" data-tab="memo-creator">
+                    <i class="fa-solid fa-file-signature"></i>
+                    <span>ขออนุมัติกิจกรรม (บันทึกข้อความ)</span>
+                </button>
+                <button class="nav-btn" data-tab="settings">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>ข้อมูล & การตั้งค่า</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="approver-badge">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <div>
+                        <div class="badge-title">ผู้อนุมัติโครงการ</div>
+                        <div class="badge-name">ผอ. ศรัณย์ภัทร กาญจนาคม</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content-area">
+            
+            <!-- Tab: Dashboard -->
+            <section id="tab-dashboard" class="tab-content active">
+                <div class="content-header">
+                    <div>
+                        <h1>แดชบอร์ดสรุปงบประมาณ</h1>
+                        <p class="subtitle">ภาพรวมงบประมาณโครงการและการจัดสรรกิจกรรมย่อย</p>
+                    </div>
+                </div>
+
+                <!-- Stats Overview Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">งบประมาณโครงการทั้งหมด</span>
+                            <i class="fa-solid fa-wallet stat-icon blue"></i>
+                        </div>
+                        <div class="stat-value" id="dash-total-budget">0.00 บาท</div>
+                        <div class="stat-desc" id="dash-project-count">0 โครงการ</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">จัดสรรให้กิจกรรมแล้ว</span>
+                            <i class="fa-solid fa-hand-holding-dollar stat-icon purple"></i>
+                        </div>
+                        <div class="stat-value" id="dash-allocated-budget">0.00 บาท</div>
+                        <div class="stat-desc" id="dash-allocated-percent">0% ของงบประมาณทั้งหมด</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">งบประมาณคงเหลือภาพรวม</span>
+                            <i class="fa-solid fa-scale-balanced stat-icon green"></i>
+                        </div>
+                        <div class="stat-value" id="dash-remaining-budget">0.00 บาท</div>
+                        <div class="stat-desc" id="dash-remaining-percent">0% ยังไม่จัดสรร</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-sections">
+                    <!-- Project Budget Overview List -->
+                    <div class="dash-section-card">
+                        <div class="section-card-header">
+                            <h2><i class="fa-solid fa-list-check"></i> รายการโครงการและสถานะงบประมาณ</h2>
+                            <button class="btn btn-primary btn-sm" onclick="app.switchTab('projects')">
+                                <i class="fa-solid fa-plus"></i> เพิ่ม/แก้ไขโครงการ
+                            </button>
+                        </div>
+                        <div class="project-summary-list" id="dashboard-project-list">
+                            <!-- Dynamic Content -->
+                            <div class="empty-state">
+                                <i class="fa-solid fa-folder-open empty-icon"></i>
+                                <p>ไม่พบข้อมูลโครงการในระบบ กรุณาเพิ่มโครงการที่เมนู "จัดการโครงการ"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Projects Management -->
+            <section id="tab-projects" class="tab-content">
+                <div class="content-header">
+                    <div>
+                        <h1>จัดการโครงการและกิจกรรมย่อย</h1>
+                        <p class="subtitle">บันทึกข้อมูลโครงการใหญ่ กำหนดจำนวนเงิน และแบ่งงบประมาณออกเป็นกิจกรรมย่อย</p>
+                    </div>
+                    <button class="btn btn-primary" id="btn-add-project">
+                        <i class="fa-solid fa-plus"></i> สร้างโครงการใหม่
+                    </button>
+                </div>
+
+                <!-- Projects List Container -->
+                <div class="projects-grid" id="projects-container">
+                    <!-- Dynamic Content -->
+                </div>
+            </section>
+
+            <!-- Tab: Memo Creator -->
+            <section id="tab-memo-creator" class="tab-content">
+                <div class="content-header">
+                    <div>
+                        <h1>ขออนุมัติดำเนินโครงการและเบิกจ่ายกิจกรรม</h1>
+                        <p class="subtitle">เขียนบันทึกข้อความราชการ ขออนุมัติตามระเบียบโรงเรียนวัดบ้านดาบ</p>
+                    </div>
+                </div>
+
+                <div class="memo-creator-layout">
+                    <!-- Form Controls Left -->
+                    <div class="form-container">
+                        <div class="card form-card">
+                            <h3><i class="fa-solid fa-pen-to-square"></i> ข้อมูลบันทึกข้อความ</h3>
+                            
+                            <div class="form-group-row">
+                                <div class="form-group">
+                                    <label for="memo-project-select">เลือกโครงการใหญ่</label>
+                                    <select id="memo-project-select" class="form-control">
+                                        <option value="">-- เลือกโครงการ --</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="memo-activity-select-group">
+                                    <label for="memo-activity-select">เลือกกิจกรรมย่อย</label>
+                                    <select id="memo-activity-select" class="form-control" disabled>
+                                        <option value="">-- เลือกกิจกรรมย่อย --</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="budget-info-badge" id="memo-budget-info" style="display:none;">
+                                <div class="budget-badge-item">
+                                    <span class="badge-label">งบโครงการใหญ่:</span>
+                                    <span class="badge-val" id="memo-project-budget-val">0 บาท</span>
+                                </div>
+                                <div class="budget-badge-item">
+                                    <span class="badge-label">งบกิจกรรมที่ได้รับ:</span>
+                                    <span class="badge-val" id="memo-activity-budget-val">0 บาท</span>
+                                </div>
+                                <div class="budget-badge-item">
+                                    <span class="badge-label">งบโครงการคงเหลือ:</span>
+                                    <span class="badge-val" id="memo-project-remaining-val">0 บาท</span>
+                                </div>
+                            </div>
+
+                            <hr class="form-divider">
+
+                            <div class="form-group-row">
+                                <div class="form-group">
+                                    <label for="memo-doc-no">ที่ (เลขที่หนังสือราชการ)</label>
+                                    <input type="text" id="memo-doc-no" class="form-control" placeholder="เช่น ศธ ๐๔๐๐๗/พิเศษ">
+                                </div>
+                                <div class="form-group">
+                                    <label for="memo-doc-date">วันที่เอกสาร</label>
+                                    <input type="text" id="memo-doc-date" class="form-control" placeholder="เช่น 6 กรกฎาคม 2569">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="memo-agency">ส่วนราชการ</label>
+                                <input type="text" id="memo-agency" class="form-control" value="โรงเรียนวัดบ้านดาบ">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="memo-subject">เรื่อง</label>
+                                <input type="text" id="memo-subject" class="form-control" placeholder="เช่น ขออนุมัติจัดโครงการพัฒนาทักษะคณิตศาสตร์และเบิกงบประมาณ">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="memo-to">เรียน</label>
+                                <input type="text" id="memo-to" class="form-control" value="ผู้อำนวยการโรงเรียนวัดบ้านดาบ">
+                            </div>
+
+                            <div class="form-group-row">
+                                <div class="form-group">
+                                    <label for="memo-dept">ฝ่าย / กลุ่ม / งาน</label>
+                                    <input type="text" id="memo-dept" class="form-control" value="กลุ่มงานบริหารงานวิชาการ">
+                                </div>
+                                <div class="form-group">
+                                    <label for="memo-page-no">แผนปฏิบัติราชการหน้าที่</label>
+                                    <input type="text" id="memo-page-no" class="form-control" value="1">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="memo-prev-spent">งบประมาณที่เคยขอเบิกไปแล้วก่อนหน้านี้ (บาท)</label>
+                                <input type="number" id="memo-prev-spent" class="form-control" value="0" min="0" placeholder="ระบุงบประมาณที่เบิกไปแล้ว (ถ้ามี)">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="memo-para1">วรรคที่ 1 (ประมวลผลข้อความและงบประมาณอัตโนมัติ)</label>
+                                <textarea id="memo-para1" class="form-control" rows="3" readonly style="background-color: rgba(255, 255, 255, 0.02); color: var(--text-secondary); cursor: not-allowed;"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="memo-para2">วรรคที่ 2 (ประมวลผลข้อความและงบประมาณอัตโนมัติ)</label>
+                                <textarea id="memo-para2" class="form-control" rows="2" readonly style="background-color: rgba(255, 255, 255, 0.02); color: var(--text-secondary); cursor: not-allowed;"></textarea>
+                            </div>
+
+                            <!-- Cost Breakdown Table Builder -->
+                            <div class="form-group">
+                                <div class="flex-between">
+                                    <label>รายการค่าใช้จ่าย / ประมาณการงบประมาณ</label>
+                                    <button class="btn btn-secondary btn-xs" id="btn-add-expense-item">
+                                        <i class="fa-solid fa-plus"></i> เพิ่มรายการค่าใช้จ่าย
+                                    </button>
+                                </div>
+                                <div class="expense-items-builder">
+                                    <table class="builder-table">
+                                        <thead>
+                                            <tr>
+                                                <th>รายการค่าใช้จ่าย (เช่น ค่าอาหารกลางวัน, ค่าวัสดุ)</th>
+                                                <th style="width: 120px;">จำนวนเงิน (บาท)</th>
+                                                <th style="width: 50px;">ลบ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="expense-items-body">
+                                            <!-- Dynamic items -->
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td style="text-align: right; font-weight: bold;">รวมขออนุมัติทั้งสิ้น:</td>
+                                                <td><span id="expense-total-display">0.00</span> บาท</td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                <div id="expense-warning" class="warning-text" style="display:none;">
+                                    <i class="fa-solid fa-circle-exclamation"></i> ยอดรวมค่าใช้จ่ายสูงกว่างบประมาณของกิจกรรมที่ได้รับ!
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="memo-para3">วรรคที่ 4 (สรุปคำลงท้าย)</label>
+                                <input type="text" id="memo-para3" class="form-control" value="จึงเรียนมาเพื่อโปรดพิจารณาอนุมัติ">
+                            </div>
+
+                            <div class="form-group-row">
+                                <div class="form-group">
+                                    <label for="memo-owner-name">ชื่อเจ้าของกิจกรรม (ผู้ขออนุมัติ)</label>
+                                    <input type="text" id="memo-owner-name" class="form-control" placeholder="เช่น นายสมศักดิ์ รักดี">
+                                </div>
+                                <div class="form-group">
+                                    <label for="memo-owner-pos">ตำแหน่งเจ้าของกิจกรรม</label>
+                                    <input type="text" id="memo-owner-pos" class="form-control" value="ครู โรงเรียนวัดบ้านดาบ">
+                                </div>
+                            </div>
+
+                            <div class="form-group-row">
+                                <div class="form-group">
+                                    <label for="memo-project-owner-name">ชื่อเจ้าของโครงการใหญ่ (ผู้ร่วมเห็นชอบ/ถ้ามี)</label>
+                                    <input type="text" id="memo-project-owner-name" class="form-control" placeholder="เช่น นางสาวใจดี พัฒนา">
+                                </div>
+                                <div class="form-group">
+                                    <label for="memo-project-owner-pos">ตำแหน่งเจ้าของโครงการใหญ่</label>
+                                    <input type="text" id="memo-project-owner-pos" class="form-control" value="หัวหน้าฝ่ายบริหารงบประมาณ">
+                                </div>
+                            </div>
+
+                            <div class="form-group-row">
+                                <div class="form-group">
+                                    <label for="memo-approver-name">ชื่อผู้อนุมัติ (ผู้อำนวยการ)</label>
+                                    <input type="text" id="memo-approver-name" class="form-control" value="นายศรัณย์ภัทร กาญจนาคม">
+                                </div>
+                                <div class="form-group">
+                                    <label for="memo-approver-pos">ตำแหน่งผู้อนุมัติ</label>
+                                    <input type="text" id="memo-approver-pos" class="form-control" value="ผู้อำนวยการโรงเรียนวัดบ้านดาบ">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Memo Preview Area Right -->
+                    <div class="preview-container">
+                        <div class="preview-actions">
+                            <span class="preview-label"><i class="fa-solid fa-eye"></i> ตัวอย่างเอกสารพิมพ์ (A4)</span>
+                            <div class="preview-buttons">
+                                <button class="btn btn-secondary" id="btn-browser-print">
+                                    <i class="fa-solid fa-print"></i> พิมพ์ด้วยบราวเซอร์ / บันทึก PDF
+                                </button>
+                                <button class="btn btn-primary" id="btn-download-pdf">
+                                    <i class="fa-solid fa-file-pdf"></i> ดาวน์โหลด PDF ทันที
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Formal Thai Memo Sheet -->
+                        <div class="memo-paper-scroll">
+                            <div class="memo-paper-scale-wrapper">
+                                <div class="memo-paper" id="memo-paper-content">
+                                <!-- Document Header -->
+                                <div class="memo-header">
+                                    <!-- Official Monochrome Garuda Logo (Local fallback to Wikimedia) -->
+                                    <img class="garuda-logo" src="garuda.jpg" alt="ตราครุฑ" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/1/14/Garuda_Emblem_of_Thailand_%28Monochrome%29.svg'">
+                                    <div class="memo-title">บันทึกข้อความ</div>
+                                </div>
+
+                                <!-- Memo Meta Fields -->
+                                <div class="memo-meta">
+                                    <div class="meta-row">
+                                        <div class="meta-col-agency">
+                                            <span class="meta-label">ส่วนราชการ</span>
+                                            <span class="meta-value" id="preview-agency">โรงเรียนวัดบ้านดาบ</span>
+                                        </div>
+                                    </div>
+                                    <div class="meta-row">
+                                        <div class="meta-col-half">
+                                            <span class="meta-label">ที่</span>
+                                            <span class="meta-value" id="preview-doc-no">-</span>
+                                        </div>
+                                        <div class="meta-col-half">
+                                            <span class="meta-label">วันที่</span>
+                                            <span class="meta-value" id="preview-doc-date">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="meta-row">
+                                        <div class="meta-col-full">
+                                            <span class="meta-label">เรื่อง</span>
+                                            <span class="meta-value" id="preview-subject">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="meta-row">
+                                        <div class="meta-col-full">
+                                            <span class="meta-label">เรียน</span>
+                                            <span class="meta-value" id="preview-to">ผู้อำนวยการโรงเรียนวัดบ้านดาบ</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Memo Body -->
+                                <div class="memo-body">
+                                    <p class="memo-p indent" id="preview-para1"></p>
+                                    <p class="memo-p indent" id="preview-para2"></p>
+                                    
+                                    <!-- Dynamic Budget Table in Memo -->
+                                    <div class="preview-table-container" id="preview-budget-table-container">
+                                        <p class="table-intro">มีรายการค่าใช้จ่ายสำหรับการดำเนินงานกิจกรรมดังกล่าว ดังต่อไปนี้</p>
+                                        <table class="preview-table">
+                                            <thead>
+                                                <tr>
+                                                    <th style="text-align: center; width: 8%;">ลำดับ</th>
+                                                    <th style="text-align: left; width: 62%;">รายการ</th>
+                                                    <th style="text-align: right; width: 30%;">จำนวนเงิน (บาท)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="preview-table-body">
+                                                <!-- Dynamic Items -->
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="2" style="text-align: right; font-weight: bold;">รวมเป็นเงินทั้งสิ้น</td>
+                                                    <td style="text-align: right; font-weight: bold;" id="preview-total-amount">0.00</td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                        <p class="table-text-total" id="preview-total-text">(ตัวอักษร: - )</p>
+                                    </div>
+
+                                    <p class="memo-p indent" id="preview-para3"></p>
+                                </div>
+
+                                <!-- Memo Signatures -->
+                                <div class="memo-signatures">
+                                    <!-- Sub-activity Owner Signature Block -->
+                                    <div class="sig-block left-sig">
+                                        <div class="sig-space"></div>
+                                        <div class="sig-line">ลงชื่อ.......................................................... ผู้ขออนุมัติ</div>
+                                        <div class="sig-name">( <span id="preview-owner-name">-</span> )</div>
+                                        <div class="sig-pos">ตำแหน่ง <span id="preview-owner-pos">-</span></div>
+                                    </div>
+
+                                    <!-- Main Project Owner Co-signature Block (if exists) -->
+                                    <div class="sig-block right-sig" id="preview-project-owner-block">
+                                        <div class="sig-space"></div>
+                                        <div class="sig-line">ลงชื่อ.......................................................... ผู้เห็นชอบโครงการ</div>
+                                        <div class="sig-name">( <span id="preview-project-owner-name">-</span> )</div>
+                                        <div class="sig-pos">ตำแหน่ง <span id="preview-project-owner-pos">-</span></div>
+                                    </div>
+
+                                    <!-- School Director Approval Block -->
+                                    <div class="sig-block center-sig">
+                                        <div class="director-opinion">
+                                            <div class="opinion-title">ความเห็นของผู้อำนวยการโรงเรียนวัดบ้านดาบ</div>
+                                            <div class="opinion-choices">
+                                                <span>[  ] อนุมัติ</span>
+                                                <span style="margin-left: 40px;">[  ] ไม่อนุมัติ เนื่องจาก............................................</span>
+                                            </div>
+                                        </div>
+                                        <div class="sig-space" style="height: 45px;"></div>
+                                        <div class="sig-line">ลงชื่อ.......................................................... ผู้อนุมัติ</div>
+                                        <div class="sig-name">( <span id="preview-approver-name">นายศรัณย์ภัทร กาญจนาคม</span> )</div>
+                                        <div class="sig-pos">ตำแหน่ง <span id="preview-approver-pos">ผู้อำนวยการโรงเรียนวัดบ้านดาบ</span></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </section>
+
+            <!-- Tab: Settings -->
+            <section id="tab-settings" class="tab-content">
+                <div class="content-header">
+                    <div>
+                        <h1>ข้อมูลและการตั้งค่าระบบ</h1>
+                        <p class="subtitle">ปรับแต่งข้อมูลพื้นฐานของโรงเรียน เจ้าหน้าที่ และการสำรองข้อมูล</p>
+                    </div>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-school"></i> ข้อมูลสถานศึกษา</h3>
+                        <div class="form-group">
+                            <label for="setting-school-name">ชื่อสถานศึกษา</label>
+                            <input type="text" id="setting-school-name" class="form-control" value="โรงเรียนวัดบ้านดาบ">
+                        </div>
+                        <div class="form-group">
+                            <label for="setting-director-name">ชื่อผู้อำนวยการโรงเรียน</label>
+                            <input type="text" id="setting-director-name" class="form-control" value="นายศรัณย์ภัทร กาญจนาคม">
+                        </div>
+                        <div class="form-group">
+                            <label for="setting-director-pos">ตำแหน่งผู้อนุมัติ</label>
+                            <input type="text" id="setting-director-pos" class="form-control" value="ผู้อำนวยการโรงเรียนวัดบ้านดาบ">
+                        </div>
+                        <button class="btn btn-primary" id="btn-save-school-settings">บันทึกข้อมูลสถานศึกษา</button>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fa-solid fa-cloud"></i> ฐานข้อมูลกลางคลาวด์ (Google Sheets)</h3>
+                        <p class="settings-desc" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                            ระบุ URL ของ Google Apps Script ที่ได้จาก Google Sheets ของโรงเรียน เพื่อเปิดระบบซิงค์ข้อมูลโครงการร่วมกันระหว่างคุณครูทุกคนแบบเรียลไทม์ (เมื่อคุณครูคนใดเพิ่มโครงการหรือแก้ไข ข้อมูลจะซิงค์หากันทันที)
+                        </p>
+                        <div class="form-group">
+                            <label for="setting-db-url">Google Apps Script Web App URL</label>
+                            <input type="url" id="setting-db-url" class="form-control" placeholder="https://script.google.com/macros/s/.../exec">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.35rem;">สถานะคลาวด์:</label>
+                            <span id="db-status-badge" class="db-status-badge-offline">ปิดใช้งาน (ใช้ออฟไลน์เฉพาะในเครื่องนี้)</span>
+                        </div>
+                        <div class="settings-actions">
+                            <button class="btn btn-primary" id="btn-save-db-url">เชื่อมต่อและเปิดใช้ระบบคลาวด์</button>
+                            <button class="btn btn-secondary" id="btn-sync-now" style="display: none;">
+                                <i class="fa-solid fa-rotate"></i> ดึงข้อมูลจากคลาวด์ล่าสุด
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fa-solid fa-database"></i> ข้อมูลจำลอง & ล้างข้อมูล</h3>
+                        <p class="settings-desc">ระบบนี้เก็บข้อมูลภายในเครื่องคอมพิวเตอร์ของคุณ (LocalStorage) ข้อมูลจะไม่สูญหายเมื่อปิดเบราว์เซอร์ แต่สามารถกดปุ่มด้านล่างเพื่อล้างข้อมูลหรือเพิ่มข้อมูลตัวอย่างเพื่อทดสอบระบบได้</p>
+                        
+                        <div class="settings-actions">
+                            <button class="btn btn-secondary" id="btn-load-demo-data">
+                                <i class="fa-solid fa-circle-info"></i> โหลดข้อมูลตัวอย่าง (45,000 บาท)
+                            </button>
+                            <button class="btn btn-danger" id="btn-clear-all-data">
+                                <i class="fa-solid fa-trash-can"></i> ล้างข้อมูลทั้งหมดในระบบ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Modal: Add/Edit Project -->
+    <div id="modal-project" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-project-title">สร้างโครงการใหม่</h2>
+                <button class="modal-close" id="btn-close-project-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="project-form">
+                    <input type="hidden" id="project-id-field">
+                    
+                    <div class="form-group">
+                        <label for="project-name-field">ชื่อโครงการใหญ่</label>
+                        <input type="text" id="project-name-field" class="form-control" required placeholder="เช่น โครงการพัฒนาคุณภาพวิชาการ">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="project-budget-field">งบประมาณโครงการใหญ่ทั้งหมด (บาท)</label>
+                        <input type="number" id="project-budget-field" class="form-control" required min="0" placeholder="เช่น 45000">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="project-owner-field">ชื่อผู้รับผิดชอบโครงการใหญ่</label>
+                        <input type="text" id="project-owner-field" class="form-control" required placeholder="เช่น นางสาวใจดี พัฒนา">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="project-date-field">วันที่อนุมัติโครงการใหญ่ (สำหรับใช้อ้างอิง)</label>
+                        <input type="text" id="project-date-field" class="form-control" required placeholder="เช่น 1 พฤษภาคม 2569">
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="project-has-sub-field" checked>
+                        <label for="project-has-sub-field">โครงการนี้มีกิจกรรมย่อยหลายกิจกรรม</label>
+                    </div>
+
+                    <div class="form-divider-text">กิจกรรมภายใต้โครงการ</div>
+
+                    <div class="activities-manager-box" id="activities-manager-section">
+                        <table class="activities-table">
+                            <thead>
+                                <tr>
+                                    <th>ชื่อกิจกรรมย่อย</th>
+                                    <th style="width: 130px;">งบประมาณ (บาท)</th>
+                                    <th style="width: 140px;">วันที่จัดกิจกรรม</th>
+                                    <th>ผู้รับผิดชอบกิจกรรม</th>
+                                    <th style="width: 50px;">ลบ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modal-activities-body">
+                                <!-- Dynamic Activity Rows -->
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-secondary btn-sm" id="btn-add-activity-row" style="margin-top: 10px;">
+                            <i class="fa-solid fa-plus"></i> เพิ่มกิจกรรมย่อย
+                        </button>
+                    </div>
+
+                    <div class="budget-validation-summary" id="modal-budget-summary">
+                        <div>รวมงบประมาณกิจกรรมย่อย: <span id="modal-allocated-total">0</span> บาท</div>
+                        <div id="modal-remaining-status">งบประมาณโครงการใหญ่คงเหลือ: <span id="modal-remaining-total">0</span> บาท</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btn-cancel-project-modal">ยกเลิก</button>
+                <button type="button" class="btn btn-primary" id="btn-save-project">บันทึกข้อมูล</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script src="app.js"></script>
+</body>
+</html>

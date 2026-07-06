@@ -1,0 +1,1450 @@
+/* Web font import for TH Sarabun PSK from CDN */
+@font-face {
+    font-family: 'TH Sarabun PSK';
+    src: local('TH Sarabun PSK'),
+         url('https://cdn.jsdelivr.net/gh/Fonts-Thai/TH-Sarabun-PSK/TH%20Sarabun%20PSK.woff2') format('woff2'),
+         url('https://cdn.jsdelivr.net/gh/Fonts-Thai/TH-Sarabun-PSK/TH%20Sarabun%20PSK.woff') format('woff'),
+         url('https://cdn.jsdelivr.net/gh/Fonts-Thai/TH-Sarabun-PSK/TH%20Sarabun%20PSK.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'TH Sarabun PSK';
+    src: local('TH Sarabun PSK Bold'), local('TH Sarabun PSK-Bold'),
+         url('https://cdn.jsdelivr.net/gh/Fonts-Thai/TH-Sarabun-PSK/TH%20Sarabun%20PSK%20Bold.woff2') format('woff2'),
+         url('https://cdn.jsdelivr.net/gh/Fonts-Thai/TH-Sarabun-PSK/TH%20Sarabun%20PSK%20Bold.woff') format('woff'),
+         url('https://cdn.jsdelivr.net/gh/Fonts-Thai/TH-Sarabun-PSK/TH%20Sarabun%20PSK%20Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'TH Sarabun PSK';
+    src: local('TH Sarabun PSK Italic'), local('TH Sarabun PSK-Italic'),
+         url('https://cdn.jsdelivr.net/gh/Fonts-Thai/TH-Sarabun-PSK/TH%20Sarabun%20PSK%20Italic.woff2') format('woff2'),
+         url('https://cdn.jsdelivr.net/gh/Fonts-Thai/TH-Sarabun-PSK/TH%20Sarabun%20PSK%20Italic.woff') format('woff'),
+         url('https://cdn.jsdelivr.net/gh/Fonts-Thai/TH-Sarabun-PSK/TH%20Sarabun%20PSK%20Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'TH Sarabun PSK';
+    src: local('TH Sarabun PSK BoldItalic'), local('TH Sarabun PSK-BoldItalic'),
+         url('https://cdn.jsdelivr.net/gh/Fonts-Thai/TH-Sarabun-PSK/TH%20Sarabun%20PSK%20BoldItalic.woff2') format('woff2'),
+         url('https://cdn.jsdelivr.net/gh/Fonts-Thai/TH-Sarabun-PSK/TH%20Sarabun%20PSK%20BoldItalic.woff') format('woff'),
+         url('https://cdn.jsdelivr.net/gh/Fonts-Thai/TH-Sarabun-PSK/TH%20Sarabun%20PSK%20BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+/* ==========================================================================
+   Design System & Premium Theme (Dark Mode Base)
+   ========================================================================== */
+:root {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-card: rgba(30, 41, 59, 0.7);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --primary-glow: rgba(99, 102, 241, 0.35);
+    
+    --secondary-color: #475569;
+    --secondary-hover: #334155;
+    
+    --success-color: #10b981;
+    --success-bg: rgba(16, 185, 129, 0.15);
+    
+    --warning-color: #f59e0b;
+    --warning-bg: rgba(245, 158, 11, 0.15);
+    
+    --danger-color: #ef4444;
+    --danger-bg: rgba(239, 68, 68, 0.15);
+    
+    --sidebar-width: 280px;
+    --font-ui: 'Inter', 'Sarabun', -apple-system, sans-serif;
+    --font-memo: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-primary);
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ==========================================================================
+   App Layout
+   ========================================================================== */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: rgba(15, 23, 42, 0.95);
+    border-right: 1px solid var(--border-color);
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+}
+
+.logo-container {
+    background: linear-gradient(135deg, var(--primary-color), #a855f7);
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.logo-icon {
+    font-size: 1.25rem;
+    color: #fff;
+}
+
+.sidebar-title-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-title {
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: -0.025em;
+    background: linear-gradient(120deg, #fff, #cbd5e1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sidebar-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-grow: 1;
+}
+
+.nav-btn {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-secondary);
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: left;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-btn i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+    transition: transform 0.25s ease;
+}
+
+.nav-btn:hover {
+    color: var(--text-primary);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.nav-btn:hover i {
+    transform: scale(1.1);
+}
+
+.nav-btn.active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--primary-color), rgba(99, 102, 241, 0.7));
+    box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.approver-badge {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 0.75rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.approver-badge i {
+    color: var(--warning-color);
+    font-size: 1.2rem;
+}
+
+.badge-title {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.badge-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Content Area */
+.content-area {
+    margin-left: var(--sidebar-width);
+    flex-grow: 1;
+    padding: 2.5rem;
+    min-height: 100vh;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.25rem;
+    gap: 1.5rem;
+}
+
+h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.35rem;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    outline: none;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: #fff;
+    box-shadow: 0 4px 10px var(--primary-glow);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background-color: var(--secondary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+    transform: translateY(-1px);
+}
+
+.btn-sm {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
+}
+
+.btn-xs {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+    border-radius: 4px;
+}
+
+/* ==========================================================================
+   Cards & UI Components
+   ========================================================================== */
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.75rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+}
+
+.card h3 {
+    margin-bottom: 1.25rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+/* Stats Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.stat-title {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.stat-icon {
+    font-size: 1.25rem;
+    padding: 0.5rem;
+    border-radius: 10px;
+}
+
+.stat-icon.blue { background-color: rgba(99, 102, 241, 0.15); color: var(--primary-color); }
+.stat-icon.purple { background-color: rgba(168, 85, 247, 0.15); color: #a855f7; }
+.stat-icon.green { background-color: rgba(16, 185, 129, 0.15); color: var(--success-color); }
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+    letter-spacing: -0.02em;
+}
+
+.stat-desc {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   Dashboard Elements
+   ========================================================================== */
+.dash-section-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.75rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+}
+
+.section-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.section-card-header h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-secondary);
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.4;
+}
+
+.project-summary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.project-summary-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: all 0.25s ease;
+}
+
+.project-summary-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.project-summary-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.project-summary-name {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.project-summary-budget {
+    font-weight: 700;
+}
+
+.progress-container {
+    margin-bottom: 0.75rem;
+}
+
+.progress-track {
+    background-color: rgba(255, 255, 255, 0.08);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+    height: 100%;
+    border-radius: 4px;
+    width: 0;
+    transition: width 0.5s ease-out;
+}
+
+.progress-bar.exceeded {
+    background: linear-gradient(90deg, var(--primary-color), var(--danger-color));
+}
+
+.progress-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.project-summary-activities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed rgba(255, 255, 255, 0.05);
+}
+
+.activity-pill {
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.activity-pill strong {
+    color: var(--text-primary);
+}
+
+/* ==========================================================================
+   Project Grid (Management View)
+   ========================================================================== */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 1.5rem;
+}
+
+.project-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.3);
+    border-color: rgba(99, 102, 241, 0.2);
+}
+
+.project-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.project-card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    max-width: 80%;
+}
+
+.project-card-actions {
+    display: flex;
+    gap: 0.35rem;
+}
+
+.btn-icon {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+}
+
+.btn-icon.edit:hover { color: var(--warning-color); }
+.btn-icon.delete:hover { color: var(--danger-color); }
+
+.project-card-owner {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.project-card-budget-details {
+    background-color: rgba(255, 255, 255, 0.01);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.85rem;
+    margin-bottom: 1.25rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.budget-val-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.budget-val-lbl {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+
+.budget-val-num {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.budget-val-num.success { color: var(--success-color); }
+.budget-val-num.warning { color: var(--warning-color); }
+.budget-val-num.danger { color: var(--danger-color); }
+
+.project-card-activities-preview {
+    margin-bottom: 1.25rem;
+}
+
+.project-card-activities-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.project-card-activities-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    max-height: 120px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+/* Custom Scrollbar for activity lists */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.project-card-activity-item {
+    font-size: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    background-color: rgba(255, 255, 255, 0.02);
+    padding: 0.35rem 0.5rem;
+    border-radius: 6px;
+}
+
+.project-card-activity-item .act-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 65%;
+}
+
+.project-card-activity-item .act-budget {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.project-card-footer-action {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* ==========================================================================
+   Forms & Controls
+   ========================================================================== */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.form-control {
+    width: 100%;
+    background-color: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.65rem 0.85rem;
+    border-radius: 8px;
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+textarea.form-control {
+    resize: vertical;
+}
+
+.form-divider {
+    border: 0;
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 1.5rem 0;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.checkbox-group label {
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.warning-text {
+    color: var(--warning-color);
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* ==========================================================================
+   Expense Items Builder
+   ========================================================================== */
+.expense-items-builder {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: rgba(15, 23, 42, 0.4);
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+
+.builder-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.builder-table th {
+    background-color: rgba(255, 255, 255, 0.03);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.builder-table td {
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.builder-table tfoot td {
+    background-color: rgba(255, 255, 255, 0.02);
+    border-bottom: none;
+    padding: 0.65rem 0.75rem;
+}
+
+.expense-row input {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    width: 100%;
+    outline: none;
+    padding: 0.25rem 0;
+}
+
+.expense-row input:focus {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    padding: 0.25rem 0.4rem;
+}
+
+.budget-info-badge {
+    background-color: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 10px;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.budget-badge-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.badge-label {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+
+.badge-val {
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   Memo Creator Layout
+   ========================================================================== */
+.memo-creator-layout {
+    display: grid;
+    grid-template-columns: 480px minmax(0, 1fr);
+    gap: 2rem;
+    align-items: start;
+}
+
+.form-container {
+    height: 75vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.form-card {
+    margin-bottom: 1.5rem;
+}
+
+.preview-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+}
+
+.preview-actions {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 0.85rem 1.25rem;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(8px);
+}
+
+.preview-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.preview-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.memo-paper-scroll {
+    overflow: hidden;
+    padding: 1.5rem;
+    background-color: #334155;
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: inset 0 4px 12px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.memo-paper-scale-wrapper {
+    width: 210mm;
+    transform-origin: top center;
+    transition: transform 0.15s ease;
+    display: flex;
+    justify-content: center;
+}
+
+/* ==========================================================================
+   PAPER VIEW (Official Thai Memo Standard)
+   ========================================================================== */
+.memo-paper {
+    background-color: #ffffff;
+    color: #000000;
+    width: 210mm; /* A4 Width */
+    min-height: 297mm; /* A4 Height */
+    padding: 2.5cm 2cm 2cm 2.5cm; /* Margins: Left 2.5cm, Right 2cm, Top 2cm, Bottom 2cm (standard memo rules) */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    font-family: var(--font-memo);
+    line-height: 1.4;
+    font-size: 16pt; /* TH Sarabun standard font size */
+    position: relative;
+    box-sizing: border-box;
+}
+
+.memo-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    margin-bottom: 1.2cm;
+    border-bottom: 3px double #000000;
+    padding-bottom: 0.5cm;
+    position: relative;
+}
+
+.garuda-logo {
+    width: 1.5cm; /* Standard size 1.5cm */
+    height: 1.5cm;
+    object-fit: contain;
+    position: absolute;
+    left: 0;
+    bottom: 0.5cm;
+}
+
+.memo-title {
+    font-size: 29pt; /* Standard "บันทึกข้อความ" size */
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+    margin-left: 1.5cm; /* Offset by garuda width to center correctly on page */
+}
+
+.memo-meta {
+    margin-bottom: 1cm;
+    font-size: 16pt;
+}
+
+.meta-row {
+    display: flex;
+    margin-bottom: 0.25cm;
+    align-items: flex-end;
+}
+
+.meta-label {
+    font-weight: bold;
+    font-size: 16pt;
+    margin-right: 0.25cm;
+    white-space: nowrap;
+}
+
+.meta-value {
+    border-bottom: 1px dotted #888888;
+    flex-grow: 1;
+    padding-left: 0.25cm;
+    font-size: 16pt;
+}
+
+.meta-col-agency {
+    display: flex;
+    width: 100%;
+    align-items: flex-end;
+}
+
+.meta-col-half {
+    display: flex;
+    width: 50%;
+    align-items: flex-end;
+}
+
+.meta-col-full {
+    display: flex;
+    width: 100%;
+    align-items: flex-end;
+}
+
+/* Document Body Standard spacings */
+.memo-body {
+    text-align: justify;
+    text-justify: inter-word;
+    font-size: 16pt;
+    margin-bottom: 1.5cm;
+}
+
+.memo-p {
+    margin-bottom: 0.4cm;
+    line-height: 1.5;
+}
+
+.memo-p.indent {
+    text-indent: 2.5cm; /* Paragraph indent: 2.5cm */
+}
+
+/* Preview Budget Table inside paper */
+.preview-table-container {
+    margin: 0.5cm 0 0.5cm 2.5cm; /* Indent the entire table to align nicely */
+    width: calc(100% - 2.5cm);
+}
+
+.table-intro {
+    font-size: 16pt;
+    margin-bottom: 0.25cm;
+}
+
+.preview-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15pt;
+    margin-bottom: 0.25cm;
+}
+
+.preview-table th, 
+.preview-table td {
+    border: 1px solid #000000;
+    padding: 0.15cm 0.3cm;
+}
+
+.preview-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.table-text-total {
+    font-size: 15pt;
+    font-style: italic;
+    margin-bottom: 0.4cm;
+}
+
+/* Signatures section layout */
+.memo-signatures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 1.2cm;
+    column-gap: 1cm;
+    margin-top: 1.5cm;
+    font-size: 16pt;
+}
+
+.sig-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.left-sig {
+    grid-column: 1;
+}
+
+.right-sig {
+    grid-column: 2;
+}
+
+.center-sig {
+    grid-column: 1 / span 2;
+    margin-top: 0.5cm;
+    width: 100%;
+    border-top: 1px dashed #cccccc;
+    padding-top: 1cm;
+}
+
+.director-opinion {
+    text-align: left;
+    width: 80%;
+    margin: 0 auto 0.75cm auto;
+    border: 1px solid #000000;
+    padding: 0.4cm 0.6cm;
+    border-radius: 4px;
+    font-size: 15pt;
+}
+
+.opinion-title {
+    font-weight: bold;
+    margin-bottom: 0.2cm;
+}
+
+.sig-space {
+    height: 35px;
+}
+
+.sig-line {
+    margin-bottom: 0.15cm;
+}
+
+.sig-name {
+    font-weight: bold;
+    margin-bottom: 0.05cm;
+}
+
+.sig-pos {
+    font-size: 15pt;
+}
+
+/* ==========================================================================
+   Modals
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    width: 90%;
+    max-width: 800px;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    overflow: hidden;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-overlay.active .modal-content {
+    transform: translateY(0);
+}
+
+.modal-header {
+    padding: 1.25rem 1.75rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.modal-close {
+    background: transparent;
+    border: none;
+    font-size: 1.75rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 1.75rem;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.modal-footer {
+    padding: 1.25rem 1.75rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.form-divider-text {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    margin: 1.5rem 0 0.75rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-divider-text::after {
+    content: '';
+    flex-grow: 1;
+    height: 1px;
+    background-color: var(--border-color);
+}
+
+.activities-manager-box {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1rem;
+    background-color: rgba(15, 23, 42, 0.4);
+    margin-bottom: 1.25rem;
+}
+
+.activities-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.activities-table th {
+    text-align: left;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.activities-table td {
+    padding: 0.5rem 0.25rem;
+}
+
+.budget-validation-summary {
+    background-color: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    padding: 0.85rem 1.25rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.budget-validation-summary.danger {
+    background-color: var(--danger-bg);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 1.5rem;
+}
+
+.settings-desc {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.settings-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Google Sheets Connection Status Badges */
+.db-status-badge-offline {
+    display: inline-block;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    background-color: var(--secondary-hover);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.db-status-badge-online {
+    display: inline-block;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    background-color: var(--success-bg);
+    color: var(--success-color);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.db-status-badge-loading {
+    display: inline-block;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    background-color: var(--warning-bg);
+    color: var(--warning-color);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+@media (max-width: 1150px) {
+    .memo-creator-layout {
+        grid-template-columns: 1fr;
+    }
+    .form-container {
+        height: auto;
+        overflow-y: visible;
+        padding-right: 0;
+    }
+    .memo-paper-scroll {
+        max-height: none;
+    }
+}
+
+/* ==========================================================================
+   PRINT MEDIA STYLESHEET
+   ========================================================================== */
+@media print {
+    /* Set browser print page settings */
+    @page {
+        size: A4 portrait;
+        margin: 0;
+    }
+
+    /* Hide non-printable elements */
+    .sidebar, 
+    .content-header, 
+    .form-container, 
+    .preview-actions, 
+    .settings-grid,
+    .modal-overlay,
+    .stats-grid,
+    .dashboard-sections,
+    #btn-add-project,
+    button,
+    i {
+        display: none !important;
+    }
+    
+    /* Reset layout wrapper properties so printable paper is visible */
+    body, html {
+        background: #ffffff !important;
+        color: #000000 !important;
+        width: 210mm !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        font-family: var(--font-memo) !important;
+    }
+
+    .app-container, 
+    .content-area, 
+    .tab-content, 
+    .memo-creator-layout, 
+    .preview-container, 
+    .memo-paper-scroll,
+    .memo-paper-scale-wrapper {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        width: auto !important;
+        height: auto !important;
+        overflow: visible !important;
+        transform: none !important; /* Remove scaling */
+        position: static !important;
+    }
+
+    /* Format memo paper container to fit A4 precisely */
+    .memo-paper {
+        display: block !important;
+        width: 210mm !important;
+        height: 297mm !important; /* A4 page size height */
+        margin: 0 !important;
+        padding: 2.5cm 2cm 2cm 2.5cm !important; /* Official margins */
+        box-shadow: none !important;
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        box-sizing: border-box;
+        page-break-after: avoid;
+        page-break-inside: avoid;
+    }
+
+    /* Force background colors to print correctly */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .preview-table th {
+        background-color: #f2f2f2 !important;
+    }
+}
