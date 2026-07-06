@@ -1034,8 +1034,7 @@ textarea.form-control {
 
 /* Document Body Standard spacings */
 .memo-body {
-    text-align: justify;
-    text-justify: inter-word;
+    text-align: left;
     font-size: 16pt;
     margin-bottom: 1.5cm;
 }
