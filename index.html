@@ -330,8 +330,8 @@
                                 <div class="memo-paper" id="memo-paper-content">
                                 <!-- Document Header -->
                                 <div class="memo-header">
-                                    <!-- Official Monochrome Garuda Logo (Local fallback to Wikimedia) -->
-                                    <img class="garuda-logo" src="garuda.jpg" alt="ตราครุฑ" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/1/14/Garuda_Emblem_of_Thailand_%28Monochrome%29.svg'">
+                                    <!-- Official Monochrome Garuda Logo (Local fallback cascade to prevent extension name mismatch) -->
+                                    <img class="garuda-logo" src="garuda.jpg" alt="ตราครุฑ" onerror="if(this.src.indexOf('garuda.jpg') !== -1) { this.src='garuda.png'; } else if(this.src.indexOf('garuda.png') !== -1) { this.src='garuda.jpeg'; } else if(this.src.indexOf('garuda.jpeg') !== -1) { this.src='garuda.png.jpg'; } else if(this.src.indexOf('garuda.png.jpg') !== -1) { this.src='garuda.jpg.jpg'; } else { this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/1/14/Garuda_Emblem_of_Thailand_%28Monochrome%29.svg'; }">
                                     <div class="memo-title">บันทึกข้อความ</div>
                                 </div>
 
