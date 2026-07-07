@@ -18,6 +18,8 @@ const app = {
     currentTab: "dashboard",
     expenseItems: [], // Items for currently editing memo
     attachedFiles: [], // PDF or Image attachments loaded in memo
+    cachedCloudFileId: null, // Google Drive File ID currently cached
+    cachedCloudFileData: null, // File object parsed from Base64
     
     // Initializer
     init: function() {
@@ -218,6 +220,18 @@ const app = {
 
         // Attachment upload event listener
         document.getElementById("memo-attachment-upload").addEventListener("change", (e) => this.handleAttachmentUpload(e));
+
+        // Cloud attachment checkbox listener
+        const cloudCheckbox = document.getElementById("memo-use-cloud-file");
+        if (cloudCheckbox) {
+            cloudCheckbox.addEventListener("change", (e) => {
+                if (e.target.checked && this.cachedCloudFileId) {
+                    this.fetchCloudProjectFile(this.cachedCloudFileId);
+                } else {
+                    this.renderAttachmentPreviews();
+                }
+            });
+        }
 
         // Window resize event to auto scale A4 preview sheet
         window.addEventListener("resize", () => this.adjustPreviewScale());
@@ -594,6 +608,11 @@ const app = {
             document.getElementById("project-owner-field").value = project.owner;
             document.getElementById("project-date-field").value = project.projectDate || ""; // Locked project date
             
+            const linkField = document.getElementById("project-file-link-field");
+            if (linkField) {
+                linkField.value = project.projectFileId ? `https://drive.google.com/file/d/${project.projectFileId}/view` : "";
+            }
+            
             const hasSubCheckbox = document.getElementById("project-has-sub-field");
             hasSubCheckbox.checked = project.hasSubActivities;
             document.getElementById("activities-manager-section").style.display = project.hasSubActivities ? "block" : "none";
@@ -609,6 +628,9 @@ const app = {
             document.getElementById("project-id-field").value = "";
             document.getElementById("project-has-sub-field").checked = true;
             document.getElementById("activities-manager-section").style.display = "block";
+            
+            const linkField = document.getElementById("project-file-link-field");
+            if (linkField) linkField.value = "";
             
             // Add one default activity row
             this.addActivityRowToModal();
@@ -749,6 +771,13 @@ const app = {
             });
         }
 
+        const linkVal = document.getElementById("project-file-link-field") ? document.getElementById("project-file-link-field").value.trim() : "";
+        let fileId = "";
+        if (linkVal) {
+            const match = linkVal.match(/\/d\/([a-zA-Z0-9-_]+)/) || linkVal.match(/id=([a-zA-Z0-9-_]+)/);
+            fileId = match ? match[1] : linkVal;
+        }
+
         const projectData = {
             id: id || "project-" + Date.now(),
             name: name,
@@ -756,6 +785,7 @@ const app = {
             owner: owner,
             projectDate: projectDate,
             hasSubActivities: hasSubActivities,
+            projectFileId: fileId,
             activities: activities
         };
 
@@ -797,14 +827,35 @@ const app = {
         const activityGroup = document.getElementById("memo-activity-select-group");
         const budgetInfo = document.getElementById("memo-budget-info");
         
+        const cloudSection = document.getElementById("cloud-file-attachment-section");
+        const cloudCheckbox = document.getElementById("memo-use-cloud-file");
+
         if (!projectId) {
             activitySelect.innerHTML = `<option value="">-- เลือกกิจกรรมย่อย --</option>`;
             activitySelect.disabled = true;
             budgetInfo.style.display = "none";
+            if (cloudSection) cloudSection.style.display = "none";
+            if (cloudCheckbox) cloudCheckbox.checked = false;
+            this.cachedCloudFileId = null;
+            this.cachedCloudFileData = null;
+            this.renderAttachmentPreviews();
             return;
         }
 
         const project = this.projects.find(p => p.id === projectId);
+        if (!project) return;
+
+        // Cloud project file check
+        if (project.projectFileId) {
+            if (cloudSection) cloudSection.style.display = "block";
+            if (cloudCheckbox) cloudCheckbox.checked = true;
+            this.fetchCloudProjectFile(project.projectFileId);
+        } else {
+            if (cloudSection) cloudSection.style.display = "none";
+            if (cloudCheckbox) cloudCheckbox.checked = false;
+            this.cachedCloudFileId = null;
+            this.cachedCloudFileData = null;
+        }
         if (!project) return;
 
         // Auto-fill project owner to co-signer block in form
@@ -1048,6 +1099,71 @@ const app = {
         this.renderAttachmentPreviews();
     },
 
+    fetchCloudProjectFile: function(fileId) {
+        if (!fileId || !this.dbUrl) return;
+        
+        // If already cached and match current ID, don't refetch
+        if (this.cachedCloudFileId === fileId && this.cachedCloudFileData) {
+            this.renderAttachmentPreviews();
+            return;
+        }
+        
+        const loadingIndicator = document.getElementById("cloud-file-loading");
+        if (loadingIndicator) loadingIndicator.style.display = "flex";
+        
+        this.cachedCloudFileId = fileId;
+        this.cachedCloudFileData = null;
+        
+        fetch(this.dbUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain"
+            },
+            body: JSON.stringify({
+                action: "getProjectFile",
+                fileId: fileId
+            })
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (res.status === "success") {
+                const base64Data = res.data;
+                const mimeType = res.mimeType;
+                const name = res.name;
+                
+                if (mimeType === "application/pdf") {
+                    const binaryString = window.atob(base64Data);
+                    const len = binaryString.length;
+                    const bytes = new Uint8Array(len);
+                    for (let i = 0; i < len; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    this.cachedCloudFileData = {
+                        name: name,
+                        type: "pdf",
+                        data: bytes.buffer
+                    };
+                } else {
+                    this.cachedCloudFileData = {
+                        name: name,
+                        type: "image",
+                        data: `data:${mimeType};base64,${base64Data}`
+                    };
+                }
+                
+                if (loadingIndicator) loadingIndicator.style.display = "none";
+                this.renderAttachmentPreviews();
+            } else {
+                throw new Error(res.message);
+            }
+        })
+        .catch(err => {
+            console.error("Error fetching cloud project file: ", err);
+            if (loadingIndicator) loadingIndicator.style.display = "none";
+            alert("ไม่สามารถดึงไฟล์โครงการเต็มจาก Google Drive ได้: " + err.toString());
+        });
+    },
+
     renderAttachmentPreviews: function() {
         // Render attachment list in editor sidebar
         const listContainer = document.getElementById("memo-attachment-list");
@@ -1074,7 +1190,13 @@ const app = {
         if (!container) return;
         container.innerHTML = "";
 
-        if (this.attachedFiles.length === 0) {
+        let filesToRender = [...this.attachedFiles];
+        const useCloudFile = document.getElementById("memo-use-cloud-file") ? document.getElementById("memo-use-cloud-file").checked : false;
+        if (useCloudFile && this.cachedCloudFileData) {
+            filesToRender.unshift(this.cachedCloudFileData); // Put the cloud project file at the beginning
+        }
+
+        if (filesToRender.length === 0) {
             this.adjustPreviewScale();
             return;
         }
@@ -1086,7 +1208,7 @@ const app = {
 
         let renderChainPromise = Promise.resolve();
 
-        this.attachedFiles.forEach((file) => {
+        filesToRender.forEach((file) => {
             if (file.type === "image") {
                 renderChainPromise = renderChainPromise.then(() => {
                     const pageBreak = document.createElement("div");

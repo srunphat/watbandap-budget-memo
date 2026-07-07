@@ -36,7 +36,7 @@ function doGet(e) {
     sheet.appendRow([
       "Project ID", "Project Name", "Project Budget", "Project Owner", "Project Date",
       "Activity ID", "Activity Name", "Activity Budget", "Activity Date", "Activity Owner",
-      "Has Sub-Activities"
+      "Has Sub-Activities", "Project File ID"
     ]);
   }
   
@@ -56,6 +56,7 @@ function doGet(e) {
         owner: row[3],
         projectDate: row[4],
         hasSubActivities: row[10] === true || row[10] === "TRUE" || row[10] === "true",
+        projectFileId: row[11] || "", // Column L
         activities: []
       };
     }
@@ -95,7 +96,7 @@ function doPost(e) {
       sheet.appendRow([
         "Project ID", "Project Name", "Project Budget", "Project Owner", "Project Date",
         "Activity ID", "Activity Name", "Activity Budget", "Activity Date", "Activity Owner",
-        "Has Sub-Activities"
+        "Has Sub-Activities", "Project File ID"
       ]);
     }
     
@@ -105,7 +106,7 @@ function doPost(e) {
       sheet.appendRow([
         "Project ID", "Project Name", "Project Budget", "Project Owner", "Project Date",
         "Activity ID", "Activity Name", "Activity Budget", "Activity Date", "Activity Owner",
-        "Has Sub-Activities"
+        "Has Sub-Activities", "Project File ID"
       ]);
       
       var projects = postData.projects || [];
@@ -115,18 +116,32 @@ function doPost(e) {
             sheet.appendRow([
               p.id, p.name, p.totalBudget, p.owner, p.projectDate,
               a.id, a.name, a.budget, a.date, a.owner,
-              p.hasSubActivities ? "TRUE" : "FALSE"
+              p.hasSubActivities ? "TRUE" : "FALSE",
+              p.projectFileId || ""
             ]);
           });
         } else {
           sheet.appendRow([
             p.id, p.name, p.totalBudget, p.owner, p.projectDate,
             "", "", 0, "", "",
-            p.hasSubActivities ? "TRUE" : "FALSE"
+            p.hasSubActivities ? "TRUE" : "FALSE",
+            p.projectFileId || ""
           ]);
         }
       });
       result = { status: "success", message: "Saved successfully" };
+    } else if (action === "getProjectFile") {
+      var fileId = postData.fileId;
+      var file = DriveApp.getFileById(fileId);
+      var blob = file.getBlob();
+      var bytes = blob.getBytes();
+      var base64 = Utilities.base64Encode(bytes);
+      result = {
+        status: "success",
+        name: file.getName(),
+        mimeType: blob.getContentType(),
+        data: base64
+      };
     }
   } catch (err) {
     result = { status: "error", message: err.toString() };
