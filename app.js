@@ -1479,6 +1479,9 @@ const app = {
             pagebreak: { mode: ['css', 'legacy'] }
         };
 
+        // Temporarily add class to body to hide page break markers in PDF
+        document.body.classList.add("generating-pdf");
+
         // Temporarily reset inline scale transform for PDF generation
         const oldTransform = element.style.transform;
         const oldWidth = element.style.width;
@@ -1489,12 +1492,14 @@ const app = {
         element.style.transformOrigin = "top left";
 
         html2pdf().set(opt).from(element).save().then(() => {
-            // Restore scale transform
+            // Restore styles
+            document.body.classList.remove("generating-pdf");
             element.style.transform = oldTransform;
             element.style.width = oldWidth;
             element.style.transformOrigin = oldTransformOrigin;
         }).catch(err => {
             console.error("PDF generation error: ", err);
+            document.body.classList.remove("generating-pdf");
             element.style.transform = oldTransform;
             element.style.width = oldWidth;
             element.style.transformOrigin = oldTransformOrigin;

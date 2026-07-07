@@ -1458,6 +1458,8 @@ textarea.form-control {
     border-top: 2px dashed #475569; /* Slate 600 */
     margin: 3rem 0;
     position: relative;
+    page-break-before: always !important; /* Force page break in html2pdf */
+    break-before: page !important;
 }
 
 .page-break::after {
@@ -1471,6 +1473,17 @@ textarea.form-control {
     font-size: 0.85rem;
     font-weight: bold;
     color: #94a3b8;
+}
+
+/* Hide page-break markers during PDF generation */
+.generating-pdf .page-break {
+    height: 0 !important;
+    border: none !important;
+    margin: 0 !important;
+}
+
+.generating-pdf .page-break::after {
+    display: none !important;
 }
 
 /* Attachment Sheet styling matching government document layout */
