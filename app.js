@@ -1479,8 +1479,26 @@ const app = {
             pagebreak: { mode: ['css', 'legacy'] }
         };
 
-        // Inject print stylesheet logic temporally or run html2pdf
-        html2pdf().set(opt).from(element).save();
+        // Temporarily reset inline scale transform for PDF generation
+        const oldTransform = element.style.transform;
+        const oldWidth = element.style.width;
+        const oldTransformOrigin = element.style.transformOrigin;
+        
+        element.style.transform = "none";
+        element.style.width = "210mm";
+        element.style.transformOrigin = "top left";
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            // Restore scale transform
+            element.style.transform = oldTransform;
+            element.style.width = oldWidth;
+            element.style.transformOrigin = oldTransformOrigin;
+        }).catch(err => {
+            console.error("PDF generation error: ", err);
+            element.style.transform = oldTransform;
+            element.style.width = oldWidth;
+            element.style.transformOrigin = oldTransformOrigin;
+        });
     },
 
     // Scale preview sheet using CSS transform to fit screen width
