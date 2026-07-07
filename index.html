@@ -322,6 +322,20 @@
                                 <div class="attachment-list-wrapper" style="margin-top: 0.5rem;">
                                     <div class="attachment-list" id="memo-attachment-list" style="display: flex; flex-direction: column; gap: 0.3rem;"></div>
                                 </div>
+
+                                <!-- Cloud Project File Indicator -->
+                                <div id="cloud-file-attachment-section" style="display: none; margin-top: 1rem; border-top: 1px dashed var(--border-color); padding-top: 1rem;">
+                                    <label class="checkbox-container" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-primary);">
+                                        <input type="checkbox" id="memo-use-cloud-file" style="cursor: pointer;">
+                                        <span style="font-weight: bold;"><i class="fa-solid fa-cloud-arrow-down" style="color: var(--accent-color);"></i> แนบไฟล์โครงการฉบับเต็มจาก Google Drive</span>
+                                    </label>
+                                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin-left: 1.5rem; margin-top: 0.2rem;">
+                                        โครงการนี้มีไฟล์ฉบับเต็มบันทึกอยู่บนคลาวด์ ติ๊กถูกเพื่อดึงมาจัดหน้าแนบปริ้นอัตโนมัติ
+                                    </p>
+                                    <div id="cloud-file-loading" style="display: none; font-size: 0.85rem; color: var(--accent-color); margin-left: 1.5rem; margin-top: 0.5rem; align-items: center; gap: 0.4rem;">
+                                        <i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดไฟล์โครงการฉบับเต็มจากคลาวด์...
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
