@@ -1466,7 +1466,7 @@ const app = {
     // PDF Generation via html2pdf
     // ==========================================================================
     downloadPDF: function() {
-        const element = document.getElementById("memo-paper-content");
+        const element = document.getElementById("print-pdf-root");
         const docDate = document.getElementById("memo-doc-date").value.trim() || "บันทึกข้อความ";
         const subject = document.getElementById("memo-subject").value.trim() || "ขออนุมัติจัดกิจกรรม";
         

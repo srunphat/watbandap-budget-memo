@@ -1569,13 +1569,11 @@ textarea.form-control {
     }
 
     #attached-documents-container {
-        margin-left: -2.5cm !important;
-        margin-right: -2.0cm !important;
-        margin-top: -2.5cm !important;
-        margin-bottom: -2.0cm !important;
         width: 210mm !important;
         box-sizing: border-box !important;
         display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 }
 
