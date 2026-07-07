@@ -1478,61 +1478,67 @@ textarea.form-control {
     background-color: #ffffff;
     color: #000000;
     font-family: var(--font-memo);
-    font-size: 16pt;
-    line-height: 1.5;
+    font-size: 14pt;
+    line-height: 1.35;
     box-sizing: border-box;
-    margin-top: 1.5cm; /* spacing after page-break */
+    margin-top: 1.0cm; /* spacing after page-break */
 }
 
 .attachment-header {
     border-bottom: 2px solid #000000;
-    padding-bottom: 0.2cm;
-    margin-bottom: 0.8cm;
+    padding-bottom: 0.15cm;
+    margin-bottom: 0.4cm;
 }
 
 .attachment-title {
-    font-size: 20pt;
+    font-size: 18pt;
     font-weight: bold;
     text-align: center;
     margin-bottom: 0.1cm;
+    white-space: nowrap;
 }
 
 .attachment-subtitle {
-    font-size: 14pt;
+    font-size: 13pt;
     text-align: center;
     color: #444444;
 }
 
 .attachment-section {
-    margin-bottom: 0.8cm;
+    margin-bottom: 0.4cm;
 }
 
 .section-title {
-    font-size: 16pt;
+    font-size: 14pt;
     font-weight: bold;
     border-bottom: 1px solid #cccccc;
     padding-bottom: 0.1cm;
-    margin-bottom: 0.4cm;
+    margin-bottom: 0.2cm;
     display: flex;
     align-items: center;
     gap: 0.2cm;
 }
 
 .section-title i {
-    font-size: 12pt;
+    font-size: 11pt;
     color: #334155;
 }
 
 .info-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 0.3cm;
+    margin-bottom: 0.2cm;
 }
 
 .info-table td {
-    padding: 0.25cm 0.1cm;
-    font-size: 16pt;
+    padding: 0.12cm 0.1cm;
+    font-size: 14pt;
     vertical-align: top;
+}
+
+.memo-attachment-sheet .preview-table th, 
+.memo-attachment-sheet .preview-table td {
+    padding: 0.1cm 0.25cm !important;
 }
 
 .info-lbl {
