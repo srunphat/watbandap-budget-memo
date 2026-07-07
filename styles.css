@@ -1560,7 +1560,16 @@ textarea.form-control {
     
     .memo-attachment-sheet {
         margin-top: 2.5cm !important; /* Top margin for Page 2 */
-        page-break-inside: avoid !important;
+    }
+
+    #attached-documents-container {
+        margin-left: -2.5cm !important;
+        margin-right: -2.0cm !important;
+        margin-top: -2.5cm !important;
+        margin-bottom: -2.0cm !important;
+        width: 210mm !important;
+        box-sizing: border-box !important;
+        display: block !important;
     }
 }
 
@@ -1636,6 +1645,7 @@ textarea.form-control {
         justify-content: center !important;
         align-items: center !important;
         page-break-inside: avoid !important;
+        box-sizing: border-box !important;
     }
     
     .memo-attached-page canvas,
