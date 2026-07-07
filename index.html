@@ -431,8 +431,79 @@
                                         <div class="sig-name">( <span id="preview-approver-name">นายศรัณย์ภัทร กาญจนาคม</span> )</div>
                                         <div class="sig-pos">ตำแหน่ง <span id="preview-approver-pos">ผู้อำนวยการโรงเรียนวัดบ้านดาบ</span></div>
                                     </div>
-                                </div>
+                                    
+                                    <!-- Page Break for Attachment -->
+                                    <div class="page-break"></div>
 
+                                    <!-- Project and Activity Attachment Sheet -->
+                                    <div class="memo-attachment-sheet" id="preview-attachment-sheet" style="display: none;">
+                                        <div class="attachment-header">
+                                            <div class="attachment-title">รายละเอียดโครงการและกิจกรรมแนบท้าย</div>
+                                            <div class="attachment-subtitle">แนบท้ายบันทึกข้อความ ที่ <span id="attach-doc-no">-</span> ลงวันที่ <span id="attach-doc-date">-</span></div>
+                                        </div>
+
+                                        <div class="attachment-section">
+                                            <h4 class="section-title"><i class="fa-solid fa-circle-info"></i> ๑. ข้อมูลโครงการหลัก (Main Project)</h4>
+                                            <table class="info-table">
+                                                <tr>
+                                                    <td class="info-lbl" style="width: 35%;">ชื่อโครงการหลัก:</td>
+                                                    <td class="info-val" id="attach-project-name">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="info-lbl">งบประมาณโครงการรวม:</td>
+                                                    <td class="info-val" id="attach-project-budget">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="info-lbl">ผู้รับผิดชอบโครงการ:</td>
+                                                    <td class="info-val" id="attach-project-owner">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="info-lbl">วันที่อนุมัติโครงการใหญ่:</td>
+                                                    <td class="info-val" id="attach-project-date">-</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <div class="attachment-section">
+                                            <h4 class="section-title"><i class="fa-solid fa-circle-check"></i> ๒. กิจกรรมย่อยที่เสนออนุมัติครั้งนี้ (Current Activity)</h4>
+                                            <table class="info-table">
+                                                <tr>
+                                                    <td class="info-lbl" style="width: 35%;">ชื่อกิจกรรมย่อย:</td>
+                                                    <td class="info-val" id="attach-act-name">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="info-lbl">งบประมาณกิจกรรมที่จัดสรร:</td>
+                                                    <td class="info-val" id="attach-act-budget">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="info-lbl">ผู้รับผิดชอบกิจกรรม:</td>
+                                                    <td class="info-val" id="attach-act-owner">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="info-lbl">วันที่จัดกิจกรรม:</td>
+                                                    <td class="info-val" id="attach-act-date">-</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <div class="attachment-section">
+                                            <h4 class="section-title"><i class="fa-solid fa-list-check"></i> ๓. สรุปรายการกิจกรรมย่อยทั้งหมดภายใต้โครงการหลัก</h4>
+                                            <table class="preview-table" style="font-size: 14pt; margin-top: 0.5cm;">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="text-align: center; width: 10%;">ลำดับ</th>
+                                                        <th style="text-align: left; width: 45%;">ชื่อกิจกรรมย่อย</th>
+                                                        <th style="text-align: right; width: 20%;">งบประมาณ (บาท)</th>
+                                                        <th style="text-align: left; width: 25%;">ผู้รับผิดชอบ</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="attach-activities-table-body">
+                                                    <!-- Dynamic list of all activities -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

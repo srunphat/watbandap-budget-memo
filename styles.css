@@ -1426,7 +1426,8 @@ textarea.form-control {
     .memo-paper {
         display: block !important;
         width: 210mm !important;
-        height: 297mm !important; /* A4 page size height */
+        min-height: 297mm !important; /* Allow growing for multi-page printouts */
+        height: auto !important;
         margin: 0 !important;
         padding: 2.5cm 2cm 2cm 2.5cm !important; /* Official margins */
         box-shadow: none !important;
@@ -1434,7 +1435,7 @@ textarea.form-control {
         color: #000000 !important;
         box-sizing: border-box;
         page-break-after: avoid;
-        page-break-inside: avoid;
+        page-break-inside: auto; /* Let content split naturally if needed */
     }
 
     /* Force background colors to print correctly */
@@ -1447,3 +1448,119 @@ textarea.form-control {
         background-color: #f2f2f2 !important;
     }
 }
+
+/* ==========================================================================
+   Page break styles for both screen preview and print
+   ========================================================================== */
+.page-break {
+    display: block;
+    height: 1px;
+    border-top: 2px dashed #475569; /* Slate 600 */
+    margin: 3rem 0;
+    position: relative;
+}
+
+.page-break::after {
+    content: "หน้าถัดไป (เอกสารแนบท้าย)";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #334155; /* scroll container bg */
+    padding: 0 10px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #94a3b8;
+}
+
+/* Attachment Sheet styling matching government document layout */
+.memo-attachment-sheet {
+    background-color: #ffffff;
+    color: #000000;
+    font-family: var(--font-memo);
+    font-size: 16pt;
+    line-height: 1.5;
+    box-sizing: border-box;
+    margin-top: 1.5cm; /* spacing after page-break */
+}
+
+.attachment-header {
+    border-bottom: 2px solid #000000;
+    padding-bottom: 0.2cm;
+    margin-bottom: 0.8cm;
+}
+
+.attachment-title {
+    font-size: 20pt;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 0.1cm;
+}
+
+.attachment-subtitle {
+    font-size: 14pt;
+    text-align: center;
+    color: #444444;
+}
+
+.attachment-section {
+    margin-bottom: 0.8cm;
+}
+
+.section-title {
+    font-size: 16pt;
+    font-weight: bold;
+    border-bottom: 1px solid #cccccc;
+    padding-bottom: 0.1cm;
+    margin-bottom: 0.4cm;
+    display: flex;
+    align-items: center;
+    gap: 0.2cm;
+}
+
+.section-title i {
+    font-size: 12pt;
+    color: #334155;
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0.3cm;
+}
+
+.info-table td {
+    padding: 0.25cm 0.1cm;
+    font-size: 16pt;
+    vertical-align: top;
+}
+
+.info-lbl {
+    font-weight: bold;
+    color: #333333;
+}
+
+.info-val {
+    border-bottom: 1px dotted #888888;
+}
+
+@media print {
+    .page-break {
+        display: block !important;
+        height: 0 !important;
+        border: none !important;
+        margin: 0 !important;
+        page-break-before: always !important;
+        break-before: page !important;
+    }
+    
+    .page-break::after {
+        display: none !important;
+    }
+    
+    .memo-attachment-sheet {
+        margin-top: 2.5cm !important; /* Top margin for Page 2 */
+        page-break-inside: avoid !important;
+    }
+}
+

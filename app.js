@@ -1118,6 +1118,61 @@ const app = {
         }
         
         // Dynamic scale preview sheet to fit container width
+        // Render Attachment Sheet (รายละเอียดโครงการและกิจกรรมแนบท้าย)
+        const attachSheet = document.getElementById("preview-attachment-sheet");
+        if (project) {
+            attachSheet.style.display = "block";
+            
+            // Populate meta details in attachment header
+            document.getElementById("attach-doc-no").textContent = this.toThaiNumerals(docNo);
+            document.getElementById("attach-doc-date").textContent = this.toThaiNumerals(docDate);
+            
+            // Populate section 1: Main Project Details
+            document.getElementById("attach-project-name").textContent = this.toThaiNumerals(project.name || "-");
+            document.getElementById("attach-project-budget").textContent = this.toThaiNumerals(this.formatCurrency(project.totalBudget) + " บาท");
+            document.getElementById("attach-project-owner").textContent = this.toThaiNumerals(project.owner || "-");
+            document.getElementById("attach-project-date").textContent = this.toThaiNumerals(project.projectDate || "-");
+            
+            // Populate section 2: Current Sub-Activity Details
+            document.getElementById("attach-act-name").textContent = this.toThaiNumerals(activityName || "-");
+            document.getElementById("attach-act-budget").textContent = this.toThaiNumerals(this.formatCurrency(budgetAmount) + " บาท");
+            document.getElementById("attach-act-owner").textContent = this.toThaiNumerals(ownerName || "-");
+            document.getElementById("attach-act-date").textContent = this.toThaiNumerals(activityDate || "-");
+            
+            // Populate section 3: Summary table of all activities
+            const attachTableBody = document.getElementById("attach-activities-table-body");
+            if (attachTableBody) {
+                let attachRowsHtml = "";
+                if (project.activities && project.activities.length > 0) {
+                    project.activities.forEach((act, index) => {
+                        const isCurrent = (project.hasSubActivities && act.id === activityId) || (!project.hasSubActivities && index === 0);
+                        const rowStyle = isCurrent ? "font-weight: bold; background-color: #f8fafc;" : "";
+                        attachRowsHtml += `
+                            <tr style="${rowStyle}">
+                                <td style="text-align: center;">${this.toThaiNumerals(index + 1)}</td>
+                                <td style="text-align: left;">${act.name || "-"} ${isCurrent ? " (กิจกรรมที่เสนออนุมัติครั้งนี้)" : ""}</td>
+                                <td style="text-align: right;">${this.toThaiNumerals(this.formatCurrency(act.budget))}</td>
+                                <td style="text-align: left;">${act.owner || "-"}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    // No sub-activities, show the main project as the single row
+                    attachRowsHtml += `
+                        <tr style="font-weight: bold; background-color: #f8fafc;">
+                            <td style="text-align: center;">${this.toThaiNumerals(1)}</td>
+                            <td style="text-align: left;">${project.name} (ดำเนินงานเต็มโครงการ)</td>
+                            <td style="text-align: right;">${this.toThaiNumerals(this.formatCurrency(project.totalBudget))}</td>
+                            <td style="text-align: left;">${project.owner}</td>
+                        </tr>
+                    `;
+                }
+                attachTableBody.innerHTML = attachRowsHtml;
+            }
+        } else {
+            attachSheet.style.display = "none";
+        }
+
         this.adjustPreviewScale();
     },
 
@@ -1134,7 +1189,8 @@ const app = {
             filename: `บันทึกข้อความ_${subject.substring(0,25)}_${docDate}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2.5, useCORS: true, letterRendering: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['css', 'legacy'] }
         };
 
         // Inject print stylesheet logic temporally or run html2pdf
