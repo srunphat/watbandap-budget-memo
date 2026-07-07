@@ -1616,8 +1616,6 @@ textarea.form-control {
     width: 210mm;
     min-height: 297mm;
     margin-top: 1.5cm; /* spacing after page-break */
-    page-break-after: always;
-    break-after: page;
 }
 
 .memo-attached-page canvas,
@@ -1637,8 +1635,6 @@ textarea.form-control {
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
-        page-break-before: always !important;
-        break-before: page !important;
         page-break-inside: avoid !important;
     }
     
