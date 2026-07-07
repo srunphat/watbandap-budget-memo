@@ -1429,7 +1429,7 @@ textarea.form-control {
         min-height: 297mm !important; /* Allow growing for multi-page printouts */
         height: auto !important;
         margin: 0 !important;
-        padding: 2.5cm 2cm 2cm 2.5cm !important; /* Official margins */
+        padding: 1.5cm 2cm 2cm 2.5cm !important; /* Official margins (Top reduced to 1.5cm) */
         box-shadow: none !important;
         background-color: #ffffff !important;
         color: #000000 !important;
@@ -1544,6 +1544,9 @@ textarea.form-control {
 .info-lbl {
     font-weight: bold;
     color: #333333;
+    white-space: nowrap;
+    width: 1%;
+    padding-right: 0.4cm !important;
 }
 
 .info-val {
@@ -1566,6 +1569,9 @@ textarea.form-control {
     
     .memo-attachment-sheet {
         margin-top: 2.5cm !important; /* Top margin for Page 2 */
+        margin-left: -1.0cm !important; /* Shift left */
+        margin-right: -0.5cm !important; /* Expand right */
+        width: auto !important;
     }
 
     #attached-documents-container {
