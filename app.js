@@ -17,6 +17,7 @@ const app = {
     dbUrl: null, // Google Sheets Apps Script Web App URL
     currentTab: "dashboard",
     expenseItems: [], // Items for currently editing memo
+    attachedFiles: [], // PDF or Image attachments loaded in memo
     
     // Initializer
     init: function() {
@@ -214,6 +215,9 @@ const app = {
             window.print();
         });
         document.getElementById("btn-download-pdf").addEventListener("click", () => this.downloadPDF());
+
+        // Attachment upload event listener
+        document.getElementById("memo-attachment-upload").addEventListener("change", (e) => this.handleAttachmentUpload(e));
 
         // Window resize event to auto scale A4 preview sheet
         window.addEventListener("resize", () => this.adjustPreviewScale());
@@ -988,6 +992,166 @@ const app = {
         }
 
         return total;
+    },
+
+    // ==========================================================================
+    // Custom Document Attachment Upload Handling (PDF/Images)
+    // ==========================================================================
+    handleAttachmentUpload: function(e) {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+
+        let loadedCount = 0;
+        files.forEach(file => {
+            const reader = new FileReader();
+            if (file.type === "application/pdf") {
+                reader.onload = (ev) => {
+                    this.attachedFiles.push({
+                        name: file.name,
+                        type: "pdf",
+                        data: ev.target.result // ArrayBuffer
+                    });
+                    loadedCount++;
+                    if (loadedCount === files.length) {
+                        this.renderAttachmentPreviews();
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            } else if (file.type.startsWith("image/")) {
+                reader.onload = (ev) => {
+                    this.attachedFiles.push({
+                        name: file.name,
+                        type: "image",
+                        data: ev.target.result // Data URL
+                    });
+                    loadedCount++;
+                    if (loadedCount === files.length) {
+                        this.renderAttachmentPreviews();
+                    }
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert(`ไม่รองรับไฟล์ประเภท ${file.name} (กรุณาใช้ไฟล์ PDF หรือรูปภาพเท่านั้น)`);
+                loadedCount++;
+                if (loadedCount === files.length) {
+                    this.renderAttachmentPreviews();
+                }
+            }
+        });
+        
+        // Clear input value to allow uploading same file again
+        e.target.value = "";
+    },
+
+    deleteAttachment: function(index) {
+        this.attachedFiles.splice(index, 1);
+        this.renderAttachmentPreviews();
+    },
+
+    renderAttachmentPreviews: function() {
+        // Render attachment list in editor sidebar
+        const listContainer = document.getElementById("memo-attachment-list");
+        if (listContainer) {
+            listContainer.innerHTML = "";
+            this.attachedFiles.forEach((file, index) => {
+                const item = document.createElement("div");
+                item.className = "attachment-item";
+                item.innerHTML = `
+                    <span class="attachment-item-name">
+                        <i class="${file.type === 'pdf' ? 'fa-solid fa-file-pdf' : 'fa-solid fa-file-image'}" style="color: ${file.type === 'pdf' ? '#ef4444' : '#3b82f6'};"></i>
+                        ${file.name}
+                    </span>
+                    <button type="button" class="attachment-item-delete" onclick="app.deleteAttachment(${index})">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        // Render attachment pages in A4 print area
+        const container = document.getElementById("attached-documents-container");
+        if (!container) return;
+        container.innerHTML = "";
+
+        if (this.attachedFiles.length === 0) {
+            this.adjustPreviewScale();
+            return;
+        }
+
+        // Initialize PDFjs worker if not set
+        if (typeof pdfjsLib !== "undefined" && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+        }
+
+        let renderChainPromise = Promise.resolve();
+
+        this.attachedFiles.forEach((file) => {
+            if (file.type === "image") {
+                renderChainPromise = renderChainPromise.then(() => {
+                    const pageBreak = document.createElement("div");
+                    pageBreak.className = "page-break";
+                    
+                    const pageDiv = document.createElement("div");
+                    pageDiv.className = "memo-attached-page";
+                    
+                    const img = document.createElement("img");
+                    img.src = file.data;
+                    
+                    pageDiv.appendChild(img);
+                    container.appendChild(pageBreak);
+                    container.appendChild(pageDiv);
+                });
+            } else if (file.type === "pdf") {
+                renderChainPromise = renderChainPromise.then(() => {
+                    if (typeof pdfjsLib === "undefined") {
+                        console.error("PDF.js library is not loaded.");
+                        return;
+                    }
+                    const typedarray = new Uint8Array(file.data);
+                    return pdfjsLib.getDocument({ data: typedarray }).promise.then((pdf) => {
+                        let pagePromise = Promise.resolve();
+                        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                            const num = pageNum;
+                            pagePromise = pagePromise.then(() => {
+                                return pdf.getPage(num).then((page) => {
+                                    const viewport = page.getViewport({ scale: 2.0 }); // High-res render for crisp text
+                                    const canvas = document.createElement("canvas");
+                                    const context = canvas.getContext("2d");
+                                    canvas.height = viewport.height;
+                                    canvas.width = viewport.width;
+                                    
+                                    const renderContext = {
+                                        canvasContext: context,
+                                        viewport: viewport
+                                    };
+                                    
+                                    return page.render(renderContext).promise.then(() => {
+                                        const pageBreak = document.createElement("div");
+                                        pageBreak.className = "page-break";
+                                        
+                                        const pageDiv = document.createElement("div");
+                                        pageDiv.className = "memo-attached-page";
+                                        
+                                        pageDiv.appendChild(canvas);
+                                        container.appendChild(pageBreak);
+                                        container.appendChild(pageDiv);
+                                    });
+                                });
+                            });
+                        }
+                        return pagePromise;
+                    }).catch(err => {
+                        console.error("Error rendering PDF attachment: ", err);
+                    });
+                });
+            }
+        });
+
+        renderChainPromise.then(() => {
+            // Once all renders are complete, update scaling
+            setTimeout(() => this.adjustPreviewScale(), 150);
+        });
     },
 
     // ==========================================================================
