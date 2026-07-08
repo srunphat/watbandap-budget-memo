@@ -348,6 +348,7 @@ const app = {
                 totalBudget: 45000,
                 owner: "นางสาวใจดี พัฒนา",
                 projectDate: "1 พฤษภาคม 2569", // Locked project date
+                projectPageNo: "52-55",
                 hasSubActivities: true,
                 activities: [
                     { id: "act-1", name: "กิจกรรมพัฒนาทักษะคณิตศาสตร์", budget: 10000, date: "15 กรกฎาคม 2569", owner: "นายสมชาย เรียนดี" },
@@ -362,6 +363,7 @@ const app = {
                 totalBudget: 25000,
                 owner: "นายประหยัด พอเพียง",
                 projectDate: "10 พฤษภาคม 2569", // Locked project date
+                projectPageNo: "80",
                 hasSubActivities: false,
                 activities: [
                     { id: "act-5", name: "โครงการจัดซื้อคอมพิวเตอร์และครุภัณฑ์ห้องเรียน", budget: 25000, date: "25 มิถุนายน 2569", owner: "นายประหยัด พอเพียง" }
@@ -458,7 +460,7 @@ const app = {
             html += `
                 <div class="project-summary-item">
                     <div class="project-summary-info">
-                        <span class="project-summary-name">${p.name} <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-secondary);">โดย ${p.owner} (อนุมัติ: ${p.projectDate || '-'})</span></span>
+                        <span class="project-summary-name">${p.name} <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-secondary);">โดย ${p.owner} (อนุมัติ: ${p.projectDate || '-'} | แผนฯ หน้า: ${p.projectPageNo || '-'})</span></span>
                         <span class="project-summary-budget">${this.formatCurrency(p.totalBudget)} บาท</span>
                     </div>
                     <div class="progress-container">
@@ -544,9 +546,10 @@ const app = {
                                 <button class="btn-icon delete" onclick="app.deleteProject('${p.id}')" title="ลบโครงการ"><i class="fa-solid fa-trash-can"></i></button>
                             </div>
                         </div>
-                        <div class="project-card-owner">
+                        <div class="project-card-owner" style="flex-wrap: wrap; gap: 0.5rem 0;">
                             <div><i class="fa-solid fa-user-tie"></i> ผู้รับผิดชอบ: ${p.owner}</div>
                             <div style="margin-left: auto; font-size: 0.75rem; color: var(--text-secondary);"><i class="fa-solid fa-calendar-check"></i> อนุมัติ: ${p.projectDate || '-'}</div>
+                            <div style="width: 100%; font-size: 0.75rem; color: var(--primary-color); margin-top: 0.25rem;"><i class="fa-solid fa-book-open"></i> หน้าแผนปฏิบัติราชการ: ${p.projectPageNo || '-'}</div>
                         </div>
                         
                         <div class="project-card-budget-details">
@@ -618,6 +621,7 @@ const app = {
             document.getElementById("project-budget-field").value = project.totalBudget;
             document.getElementById("project-owner-field").value = project.owner;
             document.getElementById("project-date-field").value = project.projectDate || ""; // Locked project date
+            document.getElementById("project-page-field").value = project.projectPageNo || ""; // Load page number
             
             const linkField = document.getElementById("project-file-link-field");
             if (linkField) {
@@ -639,6 +643,7 @@ const app = {
             document.getElementById("project-id-field").value = "";
             document.getElementById("project-has-sub-field").checked = true;
             document.getElementById("activities-manager-section").style.display = "block";
+            document.getElementById("project-page-field").value = ""; // Clear page number
             
             const linkField = document.getElementById("project-file-link-field");
             if (linkField) linkField.value = "";
@@ -726,6 +731,7 @@ const app = {
         const totalBudget = parseFloat(document.getElementById("project-budget-field").value || 0);
         const owner = document.getElementById("project-owner-field").value.trim();
         const projectDate = document.getElementById("project-date-field").value.trim(); // Locked project date
+        const projectPageNo = document.getElementById("project-page-field").value.trim();
         const hasSubActivities = document.getElementById("project-has-sub-field").checked;
 
         if (!name || isNaN(totalBudget) || !owner || !projectDate) {
@@ -795,6 +801,7 @@ const app = {
             totalBudget: totalBudget,
             owner: owner,
             projectDate: projectDate,
+            projectPageNo: projectPageNo,
             hasSubActivities: hasSubActivities,
             projectFileId: fileId,
             activities: activities
@@ -850,6 +857,13 @@ const app = {
 
         const project = this.projects.find(p => p.id === projectId);
         if (!project) return;
+
+        // Auto-fill project page number
+        if (project.projectPageNo) {
+            document.getElementById("memo-page-no").value = project.projectPageNo;
+        } else {
+            document.getElementById("memo-page-no").value = "";
+        }
 
         this.cachedCloudFileId = null;
         this.cachedCloudFileData = null;
