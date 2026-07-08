@@ -942,7 +942,8 @@ textarea.form-control {
     transform-origin: top center;
     transition: transform 0.15s ease;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* ==========================================================================
