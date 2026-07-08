@@ -20,6 +20,8 @@ const app = {
     attachedFiles: [], // PDF or Image attachments loaded in memo
     cachedCloudFileId: null, // Google Drive File ID currently cached
     cachedCloudFileData: null, // File object parsed from Base64
+    cachedCloudPrintFileId: null, // Google Drive File ID currently cached for print tab
+    cachedCloudPrintFileData: null, // File object parsed from Base64 for print tab
     
     // Initializer
     init: function() {
@@ -92,6 +94,7 @@ const app = {
         this.renderDashboard();
         this.renderProjectsList();
         this.populateMemoDropdowns();
+        this.populatePrintProjectDropdown();
 
         // Push updates to cloud if online database is configured
         if (this.dbUrl) {
@@ -121,11 +124,14 @@ const app = {
             }
         });
 
-        // Trigger updates if switching to Memo Tab
+        // Trigger updates if switching to Memo Tab or Print Project Tab
         if (tabName === "memo-creator") {
             this.populateMemoDropdowns();
             this.updateMemoPreview();
             setTimeout(() => this.adjustPreviewScale(), 50); // Scale preview to fit screen width
+        } else if (tabName === "project-print") {
+            this.populatePrintProjectDropdown();
+            setTimeout(() => this.adjustPrintPreviewScale(), 50);
         }
     },
 
@@ -221,20 +227,25 @@ const app = {
         // Attachment upload event listener
         document.getElementById("memo-attachment-upload").addEventListener("change", (e) => this.handleAttachmentUpload(e));
 
-        // Cloud attachment checkbox listener
-        const cloudCheckbox = document.getElementById("memo-use-cloud-file");
-        if (cloudCheckbox) {
-            cloudCheckbox.addEventListener("change", (e) => {
-                if (e.target.checked && this.cachedCloudFileId) {
-                    this.fetchCloudProjectFile(this.cachedCloudFileId);
-                } else {
-                    this.renderAttachmentPreviews();
-                }
-            });
+        // Print project tab listeners
+        const printProjSelect = document.getElementById("print-project-select");
+        if (printProjSelect) {
+            printProjSelect.addEventListener("change", (e) => this.onPrintProjectChange(e.target.value));
+        }
+        const btnPrintProj = document.getElementById("btn-print-project-pdf");
+        if (btnPrintProj) {
+            btnPrintProj.addEventListener("click", () => window.print());
+        }
+        const btnDownloadProj = document.getElementById("btn-download-project-pdf");
+        if (btnDownloadProj) {
+            btnDownloadProj.addEventListener("click", () => this.downloadPrintProjectPDF());
         }
 
-        // Window resize event to auto scale A4 preview sheet
-        window.addEventListener("resize", () => this.adjustPreviewScale());
+        // Window resize event to auto scale A4 preview sheets
+        window.addEventListener("resize", () => {
+            this.adjustPreviewScale();
+            this.adjustPrintPreviewScale();
+        });
     },
 
     // ==========================================================================
@@ -826,16 +837,11 @@ const app = {
         const activitySelect = document.getElementById("memo-activity-select");
         const activityGroup = document.getElementById("memo-activity-select-group");
         const budgetInfo = document.getElementById("memo-budget-info");
-        
-        const cloudSection = document.getElementById("cloud-file-attachment-section");
-        const cloudCheckbox = document.getElementById("memo-use-cloud-file");
 
         if (!projectId) {
             activitySelect.innerHTML = `<option value="">-- เลือกกิจกรรมย่อย --</option>`;
             activitySelect.disabled = true;
             budgetInfo.style.display = "none";
-            if (cloudSection) cloudSection.style.display = "none";
-            if (cloudCheckbox) cloudCheckbox.checked = false;
             this.cachedCloudFileId = null;
             this.cachedCloudFileData = null;
             this.renderAttachmentPreviews();
@@ -845,18 +851,9 @@ const app = {
         const project = this.projects.find(p => p.id === projectId);
         if (!project) return;
 
-        // Cloud project file check
-        if (project.projectFileId) {
-            if (cloudSection) cloudSection.style.display = "block";
-            if (cloudCheckbox) cloudCheckbox.checked = true;
-            this.fetchCloudProjectFile(project.projectFileId);
-        } else {
-            if (cloudSection) cloudSection.style.display = "none";
-            if (cloudCheckbox) cloudCheckbox.checked = false;
-            this.cachedCloudFileId = null;
-            this.cachedCloudFileData = null;
-        }
-        if (!project) return;
+        this.cachedCloudFileId = null;
+        this.cachedCloudFileData = null;
+        this.renderAttachmentPreviews();
 
         // Auto-fill project owner to co-signer block in form
         document.getElementById("memo-project-owner-name").value = project.owner;
@@ -1191,10 +1188,6 @@ const app = {
         container.innerHTML = "";
 
         let filesToRender = [...this.attachedFiles];
-        const useCloudFile = document.getElementById("memo-use-cloud-file") ? document.getElementById("memo-use-cloud-file").checked : false;
-        if (useCloudFile && this.cachedCloudFileData) {
-            filesToRender.unshift(this.cachedCloudFileData); // Put the cloud project file at the beginning
-        }
 
         if (filesToRender.length === 0) {
             this.adjustPreviewScale();
@@ -1619,6 +1612,292 @@ const app = {
         }
         
         return bahtText;
+    },
+
+    // ==========================================================================
+    // Print Project Attachment Separately Tab Methods
+    // ==========================================================================
+    populatePrintProjectDropdown: function() {
+        const select = document.getElementById("print-project-select");
+        if (!select) return;
+        
+        const currentVal = select.value;
+        select.innerHTML = `<option value="">-- เลือกโครงการ --</option>`;
+        
+        this.projects.forEach(p => {
+            if (p.projectFileId) {
+                select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+            }
+        });
+        
+        if (currentVal && this.projects.some(p => p.id === currentVal && p.projectFileId)) {
+            select.value = currentVal;
+        } else {
+            this.onPrintProjectChange("");
+        }
+    },
+
+    onPrintProjectChange: function(projectId) {
+        const detailsEl = document.getElementById("print-project-details");
+        const btnPrint = document.getElementById("btn-print-project-pdf");
+        const btnDownload = document.getElementById("btn-download-project-pdf");
+        const renderContainer = document.getElementById("project-pdf-render-container");
+        const filenameSpan = document.getElementById("print-project-filename");
+        
+        if (!projectId) {
+            if (detailsEl) detailsEl.style.display = "none";
+            if (btnPrint) btnPrint.disabled = true;
+            if (btnDownload) btnDownload.disabled = true;
+            if (renderContainer) {
+                renderContainer.innerHTML = `
+                    <div class="empty-state" style="padding: 5rem 2rem; text-align: center; color: var(--text-secondary); width: 100%; margin-top: 5cm; font-family: var(--font-ui);">
+                        <i class="fa-solid fa-file-pdf empty-icon" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.4;"></i>
+                        <p style="font-size: 1.1rem; font-weight: 500;">เลือกโครงการทางซ้ายเพื่อแสดงตัวอย่างและสั่งพิมพ์</p>
+                    </div>
+                `;
+            }
+            if (filenameSpan) filenameSpan.textContent = "-";
+            this.cachedCloudPrintFileId = null;
+            this.cachedCloudPrintFileData = null;
+            return;
+        }
+
+        const project = this.projects.find(p => p.id === projectId);
+        if (!project) return;
+
+        if (detailsEl) detailsEl.style.display = "block";
+        const budgetVal = document.getElementById("print-project-budget-val");
+        const ownerVal = document.getElementById("print-project-owner-val");
+        if (budgetVal) budgetVal.textContent = this.formatCurrency(project.totalBudget) + " บาท";
+        if (ownerVal) ownerVal.textContent = project.owner;
+        
+        if (project.projectFileId) {
+            if (filenameSpan) filenameSpan.textContent = "กำลังโหลดเอกสาร...";
+            this.fetchPrintCloudFile(project.projectFileId);
+        } else {
+            if (filenameSpan) filenameSpan.textContent = "ไม่มีเอกสารแนบในโครงการนี้";
+            if (renderContainer) {
+                renderContainer.innerHTML = `
+                    <div class="empty-state" style="padding: 5rem 2rem; text-align: center; color: var(--text-secondary); width: 100%; margin-top: 5cm; font-family: var(--font-ui);">
+                        <i class="fa-solid fa-triangle-exclamation empty-icon" style="font-size: 4rem; margin-bottom: 1rem; color: var(--warning-color); opacity: 0.8;"></i>
+                        <p style="font-size: 1.1rem; font-weight: 500;">โครงการนี้ไม่มีไฟล์แนบจาก Google Drive</p>
+                    </div>
+                `;
+            }
+            if (btnPrint) btnPrint.disabled = true;
+            if (btnDownload) btnDownload.disabled = true;
+            this.cachedCloudPrintFileId = null;
+            this.cachedCloudPrintFileData = null;
+        }
+    },
+
+    fetchPrintCloudFile: function(fileId) {
+        if (!fileId || !this.dbUrl) return;
+        
+        if (this.cachedCloudPrintFileId === fileId && this.cachedCloudPrintFileData) {
+            this.renderPrintProjectPDF();
+            return;
+        }
+        
+        const loadingIndicator = document.getElementById("cloud-project-pdf-loading");
+        if (loadingIndicator) loadingIndicator.style.display = "flex";
+        
+        this.cachedCloudPrintFileId = fileId;
+        this.cachedCloudPrintFileData = null;
+        
+        fetch(this.dbUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain"
+            },
+            body: JSON.stringify({
+                action: "getProjectFile",
+                fileId: fileId
+            })
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (res.status === "success") {
+                const base64Data = res.data;
+                const mimeType = res.mimeType;
+                const name = res.name;
+                
+                if (mimeType === "application/pdf") {
+                    const binaryString = window.atob(base64Data);
+                    const len = binaryString.length;
+                    const bytes = new Uint8Array(len);
+                    for (let i = 0; i < len; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    this.cachedCloudPrintFileData = {
+                        name: name,
+                        type: "pdf",
+                        data: bytes.buffer
+                    };
+                } else {
+                    this.cachedCloudPrintFileData = {
+                        name: name,
+                        type: "image",
+                        data: `data:${mimeType};base64,${base64Data}`
+                    };
+                }
+                
+                if (loadingIndicator) loadingIndicator.style.display = "none";
+                this.renderPrintProjectPDF();
+            } else {
+                throw new Error(res.message);
+            }
+        })
+        .catch(err => {
+            console.error("Error fetching cloud project file: ", err);
+            if (loadingIndicator) loadingIndicator.style.display = "none";
+            const filenameSpan = document.getElementById("print-project-filename");
+            if (filenameSpan) filenameSpan.textContent = "ดาวน์โหลดล้มเหลว";
+            alert("ไม่สามารถดึงไฟล์โครงการเต็มจาก Google Drive ได้: " + err.toString());
+        });
+    },
+
+    renderPrintProjectPDF: function() {
+        const container = document.getElementById("project-pdf-render-container");
+        const filenameSpan = document.getElementById("print-project-filename");
+        const btnPrint = document.getElementById("btn-print-project-pdf");
+        const btnDownload = document.getElementById("btn-download-project-pdf");
+        
+        if (!container || !this.cachedCloudPrintFileData) return;
+        container.innerHTML = "";
+        
+        const file = this.cachedCloudPrintFileData;
+        if (filenameSpan) filenameSpan.textContent = file.name;
+        
+        if (btnPrint) btnPrint.disabled = false;
+        if (btnDownload) btnDownload.disabled = false;
+        
+        if (file.type === "image") {
+            const pageDiv = document.createElement("div");
+            pageDiv.className = "memo-attached-page";
+            pageDiv.style.width = "210mm";
+            pageDiv.style.backgroundColor = "#ffffff";
+            pageDiv.style.display = "flex";
+            pageDiv.style.justifyContent = "center";
+            pageDiv.style.alignItems = "center";
+            
+            const img = document.createElement("img");
+            img.src = file.data;
+            img.style.maxWidth = "100%";
+            img.style.maxHeight = "100%";
+            img.style.objectFit = "contain";
+            
+            pageDiv.appendChild(img);
+            container.appendChild(pageDiv);
+            setTimeout(() => this.adjustPrintPreviewScale(), 150);
+        } else if (file.type === "pdf") {
+            if (typeof pdfjsLib === "undefined") {
+                console.error("PDF.js library is not loaded.");
+                return;
+            }
+            if (typeof pdfjsLib !== "undefined" && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+            }
+            
+            const typedarray = new Uint8Array(file.data);
+            pdfjsLib.getDocument({ data: typedarray }).promise.then((pdf) => {
+                let pagePromise = Promise.resolve();
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    const num = pageNum;
+                    pagePromise = pagePromise.then(() => {
+                        return pdf.getPage(num).then((page) => {
+                            const viewport = page.getViewport({ scale: 2.0 });
+                            const canvas = document.createElement("canvas");
+                            const context = canvas.getContext("2d");
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+                            canvas.style.width = "100%";
+                            canvas.style.height = "100%";
+                            canvas.style.display = "block";
+                            
+                            const renderContext = {
+                                canvasContext: context,
+                                viewport: viewport
+                            };
+                            
+                            return page.render(renderContext).promise.then(() => {
+                                const pageDiv = document.createElement("div");
+                                pageDiv.className = "memo-attached-page";
+                                pageDiv.style.width = "210mm";
+                                pageDiv.style.height = "297mm";
+                                pageDiv.style.backgroundColor = "#ffffff";
+                                pageDiv.style.boxSizing = "border-box";
+                                pageDiv.style.overflow = "hidden";
+                                
+                                if (num > 1) {
+                                    const pageBreak = document.createElement("div");
+                                    pageBreak.className = "page-break";
+                                    container.appendChild(pageBreak);
+                                }
+                                
+                                pageDiv.appendChild(canvas);
+                                container.appendChild(pageDiv);
+                            });
+                        });
+                    });
+                }
+                return pagePromise.then(() => {
+                    setTimeout(() => this.adjustPrintPreviewScale(), 150);
+                });
+            }).catch(err => {
+                console.error("Error rendering PDF attachment: ", err);
+                container.innerHTML = `<div class="empty-state"><p>เกิดข้อผิดพลาดในการแสดงผล PDF</p></div>`;
+            });
+        }
+    },
+
+    adjustPrintPreviewScale: function() {
+        if (this.currentTab !== "project-print") return;
+        
+        const scrollContainer = document.querySelector("#tab-project-print .memo-paper-scroll");
+        const wrapper = document.querySelector("#tab-project-print .memo-paper-scale-wrapper");
+        const paper = document.getElementById("project-pdf-render-container");
+        
+        if (!scrollContainer || !wrapper || !paper) return;
+        
+        const containerWidth = scrollContainer.clientWidth - 48; // padding
+        const paperWidth = paper.offsetWidth || 794; // 210mm in pixels (~794px)
+        
+        let scale = containerWidth / paperWidth;
+        if (scale > 1) scale = 1;
+        if (scale < 0.3) scale = 0.3;
+        
+        wrapper.style.transform = `scale(${scale})`;
+        wrapper.style.width = "210mm";
+        wrapper.style.transformOrigin = "top center";
+        
+        const scaledHeight = paper.offsetHeight * scale;
+        scrollContainer.style.height = `${Math.max(scaledHeight + 50, 400)}px`;
+    },
+
+    downloadPrintProjectPDF: function() {
+        if (!this.cachedCloudPrintFileData) return;
+        
+        const file = this.cachedCloudPrintFileData;
+        
+        if (file.type === "pdf") {
+            const blob = new Blob([file.data], { type: "application/pdf" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = file.name || "โครงการฉบับเต็ม.pdf";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } else {
+            const a = document.createElement("a");
+            a.href = file.data;
+            a.download = file.name || "โครงการฉบับเต็ม.png";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
     },
 
     // Convert Arabic numbers (0-9) to Thai numbers (๐-๙)
