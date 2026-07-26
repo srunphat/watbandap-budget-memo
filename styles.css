@@ -1451,11 +1451,28 @@ textarea.form-control {
 
     .memo-p {
         line-height: 1.65 !important;
-        margin-bottom: 0.4cm !important;
+        margin-bottom: 0.3cm !important;
+    }
+
+    .memo-body {
+        margin-bottom: 0.5cm !important;
+    }
+
+    .preview-table-container {
+        margin: 0.3cm 0 0.3cm 2.5cm !important;
+    }
+
+    .table-text-total {
+        margin-bottom: 0.2cm !important;
+    }
+
+    .director-opinion {
+        margin-top: 0.3cm !important;
     }
 
     .memo-signatures {
         padding-top: 2.2cm !important; /* Spacing from top when breaking to Page 2 */
+        margin-top: 0.6cm !important; /* Spacing from body if fitting on page 1 */
         margin-right: 1.2cm !important; /* Shift right signature block leftwards to prevent text cut-off */
     }
 }
