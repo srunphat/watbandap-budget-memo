@@ -1042,7 +1042,7 @@ textarea.form-control {
 
 .memo-p {
     margin-bottom: 0.4cm;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .memo-p.indent {
@@ -1447,6 +1447,11 @@ textarea.form-control {
 
     .preview-table th {
         background-color: #f2f2f2 !important;
+    }
+
+    .memo-p {
+        line-height: 1.65 !important;
+        margin-bottom: 0.4cm !important;
     }
 }
 
