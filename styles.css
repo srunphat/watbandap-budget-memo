@@ -1411,7 +1411,7 @@ textarea.form-control {
 
     .app-container, 
     .content-area, 
-    .tab-content, 
+    .tab-content.active, 
     .memo-creator-layout, 
     .preview-container, 
     .memo-paper-scroll,
@@ -1426,6 +1426,10 @@ textarea.form-control {
         overflow: visible !important;
         transform: none !important; /* Remove scaling */
         position: static !important;
+    }
+
+    .tab-content:not(.active) {
+        display: none !important;
     }
 
     /* Format memo paper container to fit A4 precisely */

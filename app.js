@@ -791,6 +791,10 @@ const app = {
         const linkVal = document.getElementById("project-file-link-field") ? document.getElementById("project-file-link-field").value.trim() : "";
         let fileId = "";
         if (linkVal) {
+            if (linkVal.includes("/folders/")) {
+                alert("คำเตือน: ลิงก์ที่ป้อนเป็นลิงก์ของ 'โฟลเดอร์' Google Drive\n\nกรุณาใช้ลิงก์แชร์ของ 'ไฟล์เดี่ยว' (เช่น ไฟล์โครงการที่เป็น PDF หรือรูปภาพ) เพื่อให้ระบบดาวน์โหลดมาแสดงผลได้ครับ");
+                return;
+            }
             const match = linkVal.match(/\/d\/([a-zA-Z0-9-_]+)/) || linkVal.match(/id=([a-zA-Z0-9-_]+)/);
             fileId = match ? match[1] : linkVal;
         }
