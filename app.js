@@ -1643,12 +1643,10 @@ const app = {
         select.innerHTML = `<option value="">-- เลือกโครงการ --</option>`;
         
         this.projects.forEach(p => {
-            if (p.projectFileId) {
-                select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
-            }
+            select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
         });
         
-        if (currentVal && this.projects.some(p => p.id === currentVal && p.projectFileId)) {
+        if (currentVal && this.projects.some(p => p.id === currentVal)) {
             select.value = currentVal;
         } else {
             this.onPrintProjectChange("");
