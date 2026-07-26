@@ -1528,8 +1528,8 @@ textarea.form-control {
 .memo-attachment-sheet {
     background-color: #ffffff;
     color: #000000;
-    font-family: var(--font-memo);
-    font-size: 8pt;
+    font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;
+    font-size: 12pt;
     line-height: 1.4;
     box-sizing: border-box;
     margin-top: 1.0cm; /* spacing after page-break */
@@ -1545,7 +1545,7 @@ textarea.form-control {
 }
 
 .attachment-title {
-    font-size: 12pt;
+    font-size: 16pt;
     font-weight: bold;
     text-align: center;
     margin-bottom: 0.1cm;
@@ -1553,7 +1553,7 @@ textarea.form-control {
 }
 
 .attachment-subtitle {
-    font-size: 8pt;
+    font-size: 11pt;
     text-align: center;
     color: #444444;
 }
@@ -1563,7 +1563,7 @@ textarea.form-control {
 }
 
 .section-title {
-    font-size: 9pt;
+    font-size: 12pt;
     font-weight: bold;
     border-bottom: 1px solid #cccccc;
     padding-bottom: 0.1cm;
@@ -1574,7 +1574,7 @@ textarea.form-control {
 }
 
 .section-title i {
-    font-size: 8pt;
+    font-size: 10pt;
     color: #334155;
 }
 
@@ -1586,7 +1586,8 @@ textarea.form-control {
 
 .info-table td {
     padding: 0.12cm 0.1cm;
-    font-size: 8pt;
+    font-size: 12pt;
+    font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;
     vertical-align: top;
 }
 
