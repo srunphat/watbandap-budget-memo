@@ -1445,7 +1445,7 @@ const app = {
                                 <td style="text-align: center;">${this.toThaiNumerals(index + 1)}</td>
                                 <td style="text-align: left;">
                                     ${act.name || "-"}
-                                    ${isCurrent ? `<div style="font-size: 9pt; color: #555555; font-weight: normal; margin-top: 4px;">(กิจกรรมที่เสนออนุมัติครั้งนี้)</div>` : ""}
+                                    ${isCurrent ? `<div style="font-size: 8pt; color: #555555; font-weight: normal; margin-top: 4px;">(กิจกรรมที่เสนออนุมัติครั้งนี้)</div>` : ""}
                                 </td>
                                 <td style="text-align: right;">${this.toThaiNumerals(this.formatCurrency(act.budget))}</td>
                                 <td style="text-align: left;">${act.owner || "-"}</td>
