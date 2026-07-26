@@ -1481,7 +1481,7 @@ const app = {
         const subject = document.getElementById("memo-subject").value.trim() || "ขออนุมัติจัดกิจกรรม";
         
         const opt = {
-            margin: 0,
+            margin: [15, 20, 15, 20], // Margins: Top 15mm, Right 20mm, Bottom 15mm, Left 20mm (repeats on every page)
             filename: `บันทึกข้อความ_${subject.substring(0,25)}_${docDate}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2.5, useCORS: true },

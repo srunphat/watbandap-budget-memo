@@ -1093,6 +1093,8 @@ textarea.form-control {
     margin-top: 0.8cm;
     font-size: 16pt;
     padding-right: 1.0cm; /* Shift right signature block leftwards to prevent text cut-off */
+    page-break-inside: avoid;
+    break-inside: avoid;
 }
 
 .sig-block {
@@ -1126,6 +1128,8 @@ textarea.form-control {
     padding: 0.4cm 0.6cm;
     border-radius: 4px;
     font-size: 15pt;
+    page-break-inside: avoid;
+    break-inside: avoid;
 }
 
 .opinion-title {
