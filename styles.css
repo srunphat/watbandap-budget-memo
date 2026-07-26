@@ -954,7 +954,7 @@ textarea.form-control {
     color: #000000;
     width: 210mm; /* A4 Width */
     min-height: 297mm; /* A4 Height */
-    padding: 2.5cm 2cm 2cm 2.5cm; /* Margins: Left 2.5cm, Right 2cm, Top 2cm, Bottom 2cm (standard memo rules) */
+    padding: 4.0cm 2cm 2cm 2.5cm; /* Margins: Left 2.5cm, Right 2cm, Top 4cm (pushed down by 3 enters), Bottom 2cm */
     box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     font-family: var(--font-memo);
     line-height: 1.0;
@@ -1439,7 +1439,7 @@ textarea.form-control {
         min-height: 297mm !important; /* Allow growing for multi-page printouts */
         height: auto !important;
         margin: 0 !important;
-        padding: 1.0cm 2cm 1.0cm 2.5cm !important; /* Reclaim vertical space */
+        padding: 2.5cm 2cm 1.0cm 2.5cm !important; /* Reclaim vertical space and push top down by 1.5cm */
         box-shadow: none !important;
         background-color: #ffffff !important;
         color: #000000 !important;
