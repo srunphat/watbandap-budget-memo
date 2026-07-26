@@ -1455,7 +1455,8 @@ textarea.form-control {
     }
 
     .memo-signatures {
-        margin-top: 2.2cm !important; /* Spacing from top when breaking to Page 2 */
+        padding-top: 2.2cm !important; /* Spacing from top when breaking to Page 2 */
+        margin-right: 1.2cm !important; /* Shift right signature block leftwards to prevent text cut-off */
     }
 }
 
@@ -1500,7 +1501,7 @@ textarea.form-control {
     background-color: #ffffff;
     color: #000000;
     font-family: var(--font-memo);
-    font-size: 12pt;
+    font-size: 11pt;
     line-height: 1.4;
     box-sizing: border-box;
     margin-top: 1.0cm; /* spacing after page-break */
@@ -1516,7 +1517,7 @@ textarea.form-control {
 }
 
 .attachment-title {
-    font-size: 16pt;
+    font-size: 15pt;
     font-weight: bold;
     text-align: center;
     margin-bottom: 0.1cm;
@@ -1524,7 +1525,7 @@ textarea.form-control {
 }
 
 .attachment-subtitle {
-    font-size: 11pt;
+    font-size: 10.5pt;
     text-align: center;
     color: #444444;
 }
@@ -1534,7 +1535,7 @@ textarea.form-control {
 }
 
 .section-title {
-    font-size: 12pt;
+    font-size: 11pt;
     font-weight: bold;
     border-bottom: 1px solid #cccccc;
     padding-bottom: 0.1cm;
@@ -1545,7 +1546,7 @@ textarea.form-control {
 }
 
 .section-title i {
-    font-size: 10pt;
+    font-size: 9.5pt;
     color: #334155;
 }
 
@@ -1557,7 +1558,7 @@ textarea.form-control {
 
 .info-table td {
     padding: 0.12cm 0.1cm;
-    font-size: 12pt;
+    font-size: 11pt;
     vertical-align: top;
 }
 
