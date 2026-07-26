@@ -957,8 +957,8 @@ textarea.form-control {
     padding: 2.5cm 2cm 2cm 2.5cm; /* Margins: Left 2.5cm, Right 2cm, Top 2cm, Bottom 2cm (standard memo rules) */
     box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     font-family: var(--font-memo);
-    line-height: 1.4;
-    font-size: 20pt; /* TH Sarabun standard font size */
+    line-height: 1.0;
+    font-size: 18pt; /* TH Sarabun standard font size */
     position: relative;
     box-sizing: border-box;
 }
@@ -992,7 +992,7 @@ textarea.form-control {
 
 .memo-meta {
     margin-bottom: 1cm;
-    font-size: 20pt;
+    font-size: 18pt;
 }
 
 .meta-row {
@@ -1003,7 +1003,7 @@ textarea.form-control {
 
 .meta-label {
     font-weight: bold;
-    font-size: 20pt;
+    font-size: 18pt;
     margin-right: 0.25cm;
     white-space: nowrap;
 }
@@ -1012,7 +1012,7 @@ textarea.form-control {
     border-bottom: 1px dotted #888888;
     flex-grow: 1;
     padding-left: 0.25cm;
-    font-size: 20pt;
+    font-size: 18pt;
 }
 
 .meta-col-agency {
@@ -1036,7 +1036,7 @@ textarea.form-control {
 /* Document Body Standard spacings */
 .memo-body {
     text-align: left;
-    font-size: 20pt;
+    font-size: 18pt;
     margin-bottom: 0.8cm;
 }
 
@@ -1056,7 +1056,7 @@ textarea.form-control {
 }
 
 .table-intro {
-    font-size: 20pt;
+    font-size: 18pt;
     margin-bottom: 0.25cm;
 }
 
@@ -1091,7 +1091,7 @@ textarea.form-control {
     row-gap: 1.2cm;
     column-gap: 1cm;
     margin-top: 0.8cm;
-    font-size: 20pt;
+    font-size: 18pt;
     padding-right: 1.0cm; /* Shift right signature block leftwards to prevent text cut-off */
     page-break-inside: avoid;
     break-inside: avoid;
@@ -1459,7 +1459,7 @@ textarea.form-control {
     }
 
     .memo-p {
-        line-height: 1.65 !important;
+        line-height: 1.0 !important;
         margin-bottom: 0.3cm !important;
     }
 
@@ -1533,8 +1533,8 @@ textarea.form-control {
     background-color: #ffffff;
     color: #000000;
     font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;
-    font-size: 20pt;
-    line-height: 1.4;
+    font-size: 18pt;
+    line-height: 1.0;
     box-sizing: border-box;
     margin-top: 1.0cm; /* spacing after page-break */
     margin-left: -1.0cm; /* Shift left */
@@ -1549,7 +1549,7 @@ textarea.form-control {
 }
 
 .attachment-title {
-    font-size: 24pt;
+    font-size: 22pt;
     font-weight: bold;
     text-align: center;
     margin-bottom: 0.1cm;
@@ -1557,7 +1557,7 @@ textarea.form-control {
 }
 
 .attachment-subtitle {
-    font-size: 20pt;
+    font-size: 18pt;
     text-align: center;
     color: #444444;
 }
@@ -1567,7 +1567,7 @@ textarea.form-control {
 }
 
 .section-title {
-    font-size: 20pt;
+    font-size: 18pt;
     font-weight: bold;
     border-bottom: 1px solid #cccccc;
     padding-bottom: 0.1cm;
@@ -1590,7 +1590,7 @@ textarea.form-control {
 
 .info-table td {
     padding: 0.12cm 0.1cm;
-    font-size: 20pt;
+    font-size: 18pt;
     font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;
     vertical-align: top;
 }
