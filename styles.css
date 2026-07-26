@@ -1037,7 +1037,7 @@ textarea.form-control {
 .memo-body {
     text-align: left;
     font-size: 16pt;
-    margin-bottom: 1.5cm;
+    margin-bottom: 0.8cm;
 }
 
 .memo-p {
@@ -1051,7 +1051,7 @@ textarea.form-control {
 
 /* Preview Budget Table inside paper */
 .preview-table-container {
-    margin: 0.5cm 0 0.5cm 2.5cm; /* Indent the entire table to align nicely */
+    margin: 0.3cm 0 0.3cm 2.5cm; /* Indent the entire table to align nicely */
     width: calc(100% - 2.5cm);
 }
 
@@ -1081,7 +1081,7 @@ textarea.form-control {
 .table-text-total {
     font-size: 15pt;
     font-style: italic;
-    margin-bottom: 0.4cm;
+    margin-bottom: 0.2cm;
 }
 
 /* Signatures section layout */
@@ -1090,8 +1090,9 @@ textarea.form-control {
     grid-template-columns: 1fr 1fr;
     row-gap: 1.2cm;
     column-gap: 1cm;
-    margin-top: 1.5cm;
+    margin-top: 0.8cm;
     font-size: 16pt;
+    padding-right: 1.0cm; /* Shift right signature block leftwards to prevent text cut-off */
 }
 
 .sig-block {
@@ -1120,7 +1121,7 @@ textarea.form-control {
 .director-opinion {
     text-align: left;
     width: 80%;
-    margin: 0 auto 0.75cm auto;
+    margin: 0.4cm auto 0.75cm auto;
     border: 1px solid #000000;
     padding: 0.4cm 0.6cm;
     border-radius: 4px;
@@ -1518,7 +1519,7 @@ textarea.form-control {
     background-color: #ffffff;
     color: #000000;
     font-family: var(--font-memo);
-    font-size: 11pt;
+    font-size: 10pt;
     line-height: 1.4;
     box-sizing: border-box;
     margin-top: 1.0cm; /* spacing after page-break */
@@ -1534,7 +1535,7 @@ textarea.form-control {
 }
 
 .attachment-title {
-    font-size: 15pt;
+    font-size: 14pt;
     font-weight: bold;
     text-align: center;
     margin-bottom: 0.1cm;
@@ -1542,7 +1543,7 @@ textarea.form-control {
 }
 
 .attachment-subtitle {
-    font-size: 10.5pt;
+    font-size: 10pt;
     text-align: center;
     color: #444444;
 }
@@ -1552,7 +1553,7 @@ textarea.form-control {
 }
 
 .section-title {
-    font-size: 11pt;
+    font-size: 10.5pt;
     font-weight: bold;
     border-bottom: 1px solid #cccccc;
     padding-bottom: 0.1cm;
@@ -1563,7 +1564,7 @@ textarea.form-control {
 }
 
 .section-title i {
-    font-size: 9.5pt;
+    font-size: 9pt;
     color: #334155;
 }
 
@@ -1575,7 +1576,7 @@ textarea.form-control {
 
 .info-table td {
     padding: 0.12cm 0.1cm;
-    font-size: 11pt;
+    font-size: 10pt;
     vertical-align: top;
 }
 
