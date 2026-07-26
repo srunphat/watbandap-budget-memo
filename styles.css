@@ -958,7 +958,7 @@ textarea.form-control {
     box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     font-family: var(--font-memo);
     line-height: 1.4;
-    font-size: 16pt; /* TH Sarabun standard font size */
+    font-size: 20pt; /* TH Sarabun standard font size */
     position: relative;
     box-sizing: border-box;
 }
@@ -992,7 +992,7 @@ textarea.form-control {
 
 .memo-meta {
     margin-bottom: 1cm;
-    font-size: 16pt;
+    font-size: 20pt;
 }
 
 .meta-row {
@@ -1003,7 +1003,7 @@ textarea.form-control {
 
 .meta-label {
     font-weight: bold;
-    font-size: 16pt;
+    font-size: 20pt;
     margin-right: 0.25cm;
     white-space: nowrap;
 }
@@ -1012,7 +1012,7 @@ textarea.form-control {
     border-bottom: 1px dotted #888888;
     flex-grow: 1;
     padding-left: 0.25cm;
-    font-size: 16pt;
+    font-size: 20pt;
 }
 
 .meta-col-agency {
@@ -1036,7 +1036,7 @@ textarea.form-control {
 /* Document Body Standard spacings */
 .memo-body {
     text-align: left;
-    font-size: 16pt;
+    font-size: 20pt;
     margin-bottom: 0.8cm;
 }
 
@@ -1056,14 +1056,14 @@ textarea.form-control {
 }
 
 .table-intro {
-    font-size: 16pt;
+    font-size: 20pt;
     margin-bottom: 0.25cm;
 }
 
 .preview-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 15pt;
+    font-size: 18pt;
     margin-bottom: 0.25cm;
 }
 
@@ -1079,7 +1079,7 @@ textarea.form-control {
 }
 
 .table-text-total {
-    font-size: 15pt;
+    font-size: 18pt;
     font-style: italic;
     margin-bottom: 0.2cm;
 }
@@ -1091,7 +1091,7 @@ textarea.form-control {
     row-gap: 1.2cm;
     column-gap: 1cm;
     margin-top: 0.8cm;
-    font-size: 16pt;
+    font-size: 20pt;
     padding-right: 1.0cm; /* Shift right signature block leftwards to prevent text cut-off */
     page-break-inside: avoid;
     break-inside: avoid;
@@ -1127,7 +1127,7 @@ textarea.form-control {
     border: 1px solid #000000;
     padding: 0.4cm 0.6cm;
     border-radius: 4px;
-    font-size: 15pt;
+    font-size: 18pt;
     page-break-inside: avoid;
     break-inside: avoid;
 }
@@ -1151,7 +1151,7 @@ textarea.form-control {
 }
 
 .sig-pos {
-    font-size: 15pt;
+    font-size: 18pt;
 }
 
 /* ==========================================================================
@@ -1529,7 +1529,7 @@ textarea.form-control {
     background-color: #ffffff;
     color: #000000;
     font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;
-    font-size: 16pt;
+    font-size: 20pt;
     line-height: 1.4;
     box-sizing: border-box;
     margin-top: 1.0cm; /* spacing after page-break */
@@ -1545,7 +1545,7 @@ textarea.form-control {
 }
 
 .attachment-title {
-    font-size: 20pt;
+    font-size: 24pt;
     font-weight: bold;
     text-align: center;
     margin-bottom: 0.1cm;
@@ -1553,7 +1553,7 @@ textarea.form-control {
 }
 
 .attachment-subtitle {
-    font-size: 16pt;
+    font-size: 20pt;
     text-align: center;
     color: #444444;
 }
@@ -1563,7 +1563,7 @@ textarea.form-control {
 }
 
 .section-title {
-    font-size: 16pt;
+    font-size: 20pt;
     font-weight: bold;
     border-bottom: 1px solid #cccccc;
     padding-bottom: 0.1cm;
@@ -1574,7 +1574,7 @@ textarea.form-control {
 }
 
 .section-title i {
-    font-size: 12pt;
+    font-size: 16pt;
     color: #334155;
 }
 
@@ -1586,7 +1586,7 @@ textarea.form-control {
 
 .info-table td {
     padding: 0.12cm 0.1cm;
-    font-size: 16pt;
+    font-size: 20pt;
     font-family: 'TH Sarabun PSK', 'TH Sarabun New', 'Sarabun', sans-serif;
     vertical-align: top;
 }
