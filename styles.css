@@ -1435,7 +1435,7 @@ textarea.form-control {
         min-height: 297mm !important; /* Allow growing for multi-page printouts */
         height: auto !important;
         margin: 0 !important;
-        padding: 1.5cm 2cm 2cm 2.5cm !important; /* Official margins (Top reduced to 1.5cm) */
+        padding: 1.0cm 2cm 1.0cm 2.5cm !important; /* Reclaim vertical space */
         box-shadow: none !important;
         background-color: #ffffff !important;
         color: #000000 !important;
@@ -1460,7 +1460,7 @@ textarea.form-control {
     }
 
     .memo-body {
-        margin-bottom: 0.5cm !important;
+        margin-bottom: 0.4cm !important;
     }
 
     .preview-table-container {
@@ -1477,8 +1477,14 @@ textarea.form-control {
 
     .memo-signatures {
         padding-top: 2.2cm !important; /* Spacing from top when breaking to Page 2 */
-        margin-top: 0.6cm !important; /* Spacing from body if fitting on page 1 */
+        margin-top: 0.4cm !important; /* Spacing from body if fitting on page 1 */
+        row-gap: 0.7cm !important; /* Compress signature row gap */
         margin-right: 1.2cm !important; /* Shift right signature block leftwards to prevent text cut-off */
+    }
+
+    /* Hide hidden tabs in print mode to prevent blank pages */
+    .tab-content.hidden {
+        display: none !important;
     }
 }
 
