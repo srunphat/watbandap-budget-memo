@@ -1496,8 +1496,8 @@ textarea.form-control {
     background-color: #ffffff;
     color: #000000;
     font-family: var(--font-memo);
-    font-size: 16pt;
-    line-height: 1.45;
+    font-size: 14pt;
+    line-height: 1.4;
     box-sizing: border-box;
     margin-top: 1.0cm; /* spacing after page-break */
     margin-left: -1.0cm; /* Shift left */
