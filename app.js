@@ -82,10 +82,85 @@ const app = {
     loadProjects: function() {
         const savedProjects = localStorage.getItem("school_projects");
         if (savedProjects) {
-            this.projects = JSON.parse(savedProjects);
+            try {
+                const parsed = JSON.parse(savedProjects);
+                this.projects = this.normalizeProjects(parsed);
+            } catch (e) {
+                console.error("Error parsing local projects:", e);
+                this.projects = [];
+            }
         } else {
             this.projects = [];
         }
+    },
+
+    // Clean and normalize projects list to prevent any crashes or data conflicts
+    normalizeProjects: function(projectsList) {
+        if (!Array.isArray(projectsList)) return [];
+        
+        const cleanedProjects = [];
+        const projectsMap = {};
+        
+        projectsList.forEach(p => {
+            if (!p || !p.name) return;
+            const pName = p.name.trim();
+            let pId = p.id;
+            
+            // If pId is blank or conflicts with another project name, generate a name-based ID
+            if (!pId || (projectsMap[pId] && projectsMap[pId].name !== pName)) {
+                pId = "project-gen-" + pName.replace(/\s+/g, "_");
+            }
+            
+            if (!projectsMap[pId]) {
+                projectsMap[pId] = {
+                    id: pId,
+                    name: pName,
+                    totalBudget: parseFloat(p.totalBudget || 0),
+                    owner: p.owner || "",
+                    projectDate: p.projectDate || "",
+                    hasSubActivities: p.hasSubActivities === true || p.hasSubActivities === "TRUE" || p.hasSubActivities === "true",
+                    projectFileId: p.projectFileId || "",
+                    projectPageNo: p.projectPageNo || "",
+                    activities: []
+                };
+                cleanedProjects.push(projectsMap[pId]);
+            }
+            
+            // Merge activities cleanly, removing duplicates by name
+            if (p.activities && Array.isArray(p.activities)) {
+                p.activities.forEach(act => {
+                    if (!act || !act.name) return;
+                    const actName = act.name.trim();
+                    if (!projectsMap[pId].activities.some(a => a.name === actName)) {
+                        projectsMap[pId].activities.push({
+                            id: act.id || ("act-gen-" + actName.replace(/\s+/g, "_")),
+                            name: actName,
+                            budget: parseFloat(act.budget || 0),
+                            date: act.date || "",
+                            owner: act.owner || ""
+                        });
+                    }
+                });
+            }
+        });
+        
+        // Auto-fix hasSubActivities flag and ensure single projects have their implicit activity
+        cleanedProjects.forEach(p => {
+            if (p.activities.length === 0 || !p.hasSubActivities) {
+                p.activities = [{
+                    id: "act-single-" + p.id,
+                    name: p.name,
+                    budget: p.totalBudget,
+                    date: p.projectDate,
+                    owner: p.owner
+                }];
+                p.hasSubActivities = false;
+            } else if (p.activities.length > 1) {
+                p.hasSubActivities = true;
+            }
+        });
+        
+        return cleanedProjects;
     },
 
     // Save Projects Data
@@ -281,70 +356,7 @@ const app = {
             })
             .then(res => {
                 if (res.status === "success") {
-                    // Self-healing: clean duplicate project IDs or mixed-up activities
-                    const cleanedProjects = [];
-                    const projectsMap = {};
-                    
-                    (res.data || []).forEach(p => {
-                        if (!p.name) return;
-                        const pName = p.name.trim();
-                        let pId = p.id;
-                        
-                        // If pId is blank or conflicts with another project name, generate a name-based ID
-                        if (!pId || (projectsMap[pId] && projectsMap[pId].name !== pName)) {
-                            pId = "project-gen-" + pName.replace(/\s+/g, "_");
-                        }
-                        
-                        if (!projectsMap[pId]) {
-                            projectsMap[pId] = {
-                                id: pId,
-                                name: pName,
-                                totalBudget: p.totalBudget || 0,
-                                owner: p.owner || "",
-                                projectDate: p.projectDate || "",
-                                hasSubActivities: p.hasSubActivities,
-                                projectFileId: p.projectFileId || "",
-                                projectPageNo: p.projectPageNo || "",
-                                activities: []
-                            };
-                            cleanedProjects.push(projectsMap[pId]);
-                        }
-                        
-                        // Merge activities cleanly, removing duplicates by name
-                        if (p.activities && p.activities.length > 0) {
-                            p.activities.forEach(act => {
-                                if (!act.name) return;
-                                const actName = act.name.trim();
-                                if (!projectsMap[pId].activities.some(a => a.name === actName)) {
-                                    projectsMap[pId].activities.push({
-                                        id: act.id || ("act-gen-" + actName.replace(/\s+/g, "_")),
-                                        name: actName,
-                                        budget: act.budget || 0,
-                                        date: act.date || "",
-                                        owner: act.owner || ""
-                                    });
-                                }
-                            });
-                        }
-                    });
-                    
-                    // Auto-fix hasSubActivities flag and ensure single projects have their implicit activity
-                    cleanedProjects.forEach(p => {
-                        if (p.activities.length === 0 || !p.hasSubActivities) {
-                            p.activities = [{
-                                id: "act-single-" + p.id,
-                                name: p.name,
-                                budget: p.totalBudget,
-                                date: p.projectDate,
-                                owner: p.owner
-                            }];
-                            p.hasSubActivities = false;
-                        } else if (p.activities.length > 1) {
-                            p.hasSubActivities = true;
-                        }
-                    });
-                    
-                    this.projects = cleanedProjects;
+                    this.projects = this.normalizeProjects(res.data || []);
                     localStorage.setItem("school_projects", JSON.stringify(this.projects));
                     this.updateCloudStatus("online");
                     
@@ -496,7 +508,7 @@ const app = {
         let html = "";
         this.projects.forEach(p => {
             let pAllocated = 0;
-            if (p.hasSubActivities) {
+            if (p.hasSubActivities && p.activities) {
                 p.activities.forEach(a => { pAllocated += parseFloat(a.budget || 0); });
             } else {
                 pAllocated = parseFloat(p.totalBudget || 0);
@@ -565,7 +577,7 @@ const app = {
         let html = "";
         this.projects.forEach(p => {
             let pAllocated = 0;
-            if (p.hasSubActivities) {
+            if (p.hasSubActivities && p.activities) {
                 p.activities.forEach(a => { pAllocated += parseFloat(a.budget || 0); });
             } else {
                 pAllocated = parseFloat(p.totalBudget || 0);
@@ -939,7 +951,7 @@ const app = {
         // Auto-fill project owner to co-signer block in form
         document.getElementById("memo-project-owner-name").value = project.owner;
         
-        if (project.hasSubActivities) {
+        if (project.hasSubActivities && project.activities) {
             activityGroup.style.display = "block";
             activitySelect.disabled = false;
             activitySelect.innerHTML = `<option value="">-- เลือกกิจกรรมย่อย --</option>`;
@@ -956,21 +968,22 @@ const app = {
         } else {
             // If single project, it only has 1 activity which is the project itself
             activityGroup.style.display = "none"; // Hide selection since there's only 1
-            const singleAct = project.activities[0];
-            
-            // Render budget details
-            budgetInfo.style.display = "flex";
-            document.getElementById("memo-project-budget-val").textContent = this.formatCurrency(project.totalBudget) + " บาท";
-            document.getElementById("memo-activity-budget-val").textContent = this.formatCurrency(project.totalBudget) + " บาท";
-            document.getElementById("memo-project-remaining-val").textContent = "0 บาท";
-            
-            // Auto fill form fields
-            document.getElementById("memo-owner-name").value = singleAct.owner;
-            // Prefill subject exactly from Image 2 template
-            document.getElementById("memo-subject").value = "ขออนุญาตดำเนินการตามกิจกรรมในแผนปฏิบัติราชการประจำปี";
-            
-            this.generateDefaultParagraphs(project.name, project.totalBudget, singleAct.owner, project.name, project.projectDate, singleAct.date || project.projectDate);
-            this.updateMemoPreview();
+            const singleAct = project.activities ? project.activities[0] : null;
+            if (singleAct) {
+                // Render budget details
+                budgetInfo.style.display = "flex";
+                document.getElementById("memo-project-budget-val").textContent = this.formatCurrency(project.totalBudget) + " บาท";
+                document.getElementById("memo-activity-budget-val").textContent = this.formatCurrency(project.totalBudget) + " บาท";
+                document.getElementById("memo-project-remaining-val").textContent = "0 บาท";
+                
+                // Auto fill form fields
+                document.getElementById("memo-owner-name").value = singleAct.owner;
+                // Prefill subject exactly from Image 2 template
+                document.getElementById("memo-subject").value = "ขออนุญาตดำเนินการตามกิจกรรมในแผนปฏิบัติราชการประจำปี";
+                
+                this.generateDefaultParagraphs(project.name, project.totalBudget, singleAct.owner, project.name, project.projectDate, singleAct.date || project.projectDate);
+                this.updateMemoPreview();
+            }
         }
     },
 
