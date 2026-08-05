@@ -328,9 +328,18 @@ const app = {
                         }
                     });
                     
-                    // Auto-fix hasSubActivities flag
+                    // Auto-fix hasSubActivities flag and ensure single projects have their implicit activity
                     cleanedProjects.forEach(p => {
-                        if (p.activities.length > 1) {
+                        if (p.activities.length === 0 || !p.hasSubActivities) {
+                            p.activities = [{
+                                id: "act-single-" + p.id,
+                                name: p.name,
+                                budget: p.totalBudget,
+                                date: p.projectDate,
+                                owner: p.owner
+                            }];
+                            p.hasSubActivities = false;
+                        } else if (p.activities.length > 1) {
                             p.hasSubActivities = true;
                         }
                     });
