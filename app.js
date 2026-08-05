@@ -281,7 +281,61 @@ const app = {
             })
             .then(res => {
                 if (res.status === "success") {
-                    this.projects = res.data || [];
+                    // Self-healing: clean duplicate project IDs or mixed-up activities
+                    const cleanedProjects = [];
+                    const projectsMap = {};
+                    
+                    (res.data || []).forEach(p => {
+                        if (!p.name) return;
+                        const pName = p.name.trim();
+                        let pId = p.id;
+                        
+                        // If pId is blank or conflicts with another project name, generate a name-based ID
+                        if (!pId || (projectsMap[pId] && projectsMap[pId].name !== pName)) {
+                            pId = "project-gen-" + pName.replace(/\s+/g, "_");
+                        }
+                        
+                        if (!projectsMap[pId]) {
+                            projectsMap[pId] = {
+                                id: pId,
+                                name: pName,
+                                totalBudget: p.totalBudget || 0,
+                                owner: p.owner || "",
+                                projectDate: p.projectDate || "",
+                                hasSubActivities: p.hasSubActivities,
+                                projectFileId: p.projectFileId || "",
+                                projectPageNo: p.projectPageNo || "",
+                                activities: []
+                            };
+                            cleanedProjects.push(projectsMap[pId]);
+                        }
+                        
+                        // Merge activities cleanly, removing duplicates by name
+                        if (p.activities && p.activities.length > 0) {
+                            p.activities.forEach(act => {
+                                if (!act.name) return;
+                                const actName = act.name.trim();
+                                if (!projectsMap[pId].activities.some(a => a.name === actName)) {
+                                    projectsMap[pId].activities.push({
+                                        id: act.id || ("act-gen-" + actName.replace(/\s+/g, "_")),
+                                        name: actName,
+                                        budget: act.budget || 0,
+                                        date: act.date || "",
+                                        owner: act.owner || ""
+                                    });
+                                }
+                            });
+                        }
+                    });
+                    
+                    // Auto-fix hasSubActivities flag
+                    cleanedProjects.forEach(p => {
+                        if (p.activities.length > 1) {
+                            p.hasSubActivities = true;
+                        }
+                    });
+                    
+                    this.projects = cleanedProjects;
                     localStorage.setItem("school_projects", JSON.stringify(this.projects));
                     this.updateCloudStatus("online");
                     
